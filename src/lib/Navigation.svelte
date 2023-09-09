@@ -1,30 +1,61 @@
+<style>
+  .c-navbar {
+    display: flex;
+    width: 100%;
+    height: 3.5rem;
+    position: sticky;
+    padding-left: 1.75rem;
+  }
+  
+  .c-navbar > ul {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    gap: 2rem;
+    place-items: center;
+  }
+
+  .c-navbar a {
+    color: grey;
+    text-decoration: none;
+  }
+  .c-navbar a:hover {
+    color: black;
+  }
+  .c-navbar li.active a {
+    color: black;
+  }
+</style>
+
 <script>
     import { page } from "$app/stores";
 
     $: path = $page.route.id;
 </script>
 
-<nav class="navbar">
-    <div class="navbar-brand">ProDuck</div>
-
-    <ul class="navbar-nav d-none d-md-flex">
-        <li class="nav-item" class:active={path == "/"}>
-          <a href="/" class="nav-link">Dashboard</a>
-        </li>
-        <li class="nav-item" class:active={path == "/products"}>
-          <a href="/products" class="nav-link">Products</a>
-        </li>
-        <li class="nav-item" class:active={path == "/inventory"}>
-          <a href="/inventory" class="nav-link">Inventory</a>
-        </li>
-        <li class="nav-item" class:active={path == "/purchases"}>
-          <a href="/purchases" class="nav-link">Purchases</a>
-        </li>
-        <li class="nav-item" class:active={path == "/sales"}>
-          <a href="/sales" class="nav-link">Sales</a>
-        </li>
-        <li class="nav-item" class:active={path == "/users"}>
-          <a href="/users" class="nav-link">Users</a>
-        </li>
-      </ul>
+<nav class="c-navbar border-bottom">
+  <ul>
+    <li class:active={path == "/"}>
+      <a href="/">Dashboard</a>
+    </li>
+    <li class:active={path == "/products"}>
+      <a href="/products">Products</a>
+    </li>
+    <li class:active={path == "/inventory"}>
+      <a href="/inventory">Inventory</a>
+    </li>
+    <li class:active={path == "/purchases"}>
+      <a href="/purchases">Purchases</a>
+    </li>
+    <li class:active={path == "/sales"}>
+      <a href="/sales">Sales</a>
+    </li>
+    <li class:active={path == "/pos"}>
+      <a href="/pos">PoS</a>
+    </li>
+    <li class:active={path == "/users"}>
+      <a href="/users">Users</a>
+    </li>
+  </ul>
 </nav>

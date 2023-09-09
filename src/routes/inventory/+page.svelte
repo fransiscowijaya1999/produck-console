@@ -1,7 +1,5 @@
-<div class="container-fluid">
-    <div class="content">
-        <h1 class="content-title">Inventory</h1>
-    </div>
+<div class="container-fluid p-3">
+    <h1>Inventory</h1>
     <div class="content">
         <nav aria-label="Breadcrumb navigation example">
             <ul class="breadcrumb">

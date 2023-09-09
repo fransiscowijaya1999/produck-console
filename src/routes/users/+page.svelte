@@ -1,6 +1,4 @@
-<div class="container-fluid">
-    <div class="content">
-        <h1 class="content-title">Users</h1>
-        <button class="btn btn-primary">Create</button>
-    </div>
+<div class="container-fluid p-3">
+    <h1>Users</h1>
+    <button class="btn btn-primary">Create</button>
 </div>
