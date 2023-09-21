@@ -1,7 +1,16 @@
 <script>
+    import axios from "axios";
     import { goto } from "$app/navigation";
+
+    import Pagination from "$lib/Pagination.svelte";
     import ProductList from "$lib/ProductList.svelte";
 
+    /** @type {import('./$types').PageData} */
+	export let data;
+
+    /** @type {number} */
+    let searchProductTimer;
+    let searchProductInput = "";
     let queryType = "products";
     // Used to search products within this category
     let selectedCategories = [
@@ -14,20 +23,36 @@
             name: "NKN"
         }
     ];
-    let products = [
-        {
-            id: 1,
-            name: "NKN 6201",
-            price: 10,
-            cost: 7,
-            stock: 200,
-            selected: false
-        }
-    ];
+    let products = data.payload ?? [];
+    let productsPagination = data.pagination;
 
     $: selectedProducts = products.filter(p => p.selected);
-</script>
 
+    const searchProductsDebounce = () => {
+        clearTimeout(searchProductTimer);
+        searchProductTimer = setTimeout(async () => {
+            const res = await axios(`/products/?keyword=${searchProductInput}`);
+
+            products = res.data.payload;
+            productsPagination = res.data.pagination;
+        }, 500);
+    }
+
+    async function nextPage() {
+        const res = await axios(`/products/?keyword=${searchProductInput}&page=${productsPagination.page + 1}`);
+
+        products = res.data.payload;
+        productsPagination = res.data.pagination;
+    }
+
+    async function prevPage() {
+        const res = await axios(`/products/?keyword=${searchProductInput}&page=${productsPagination.page - 1}`);
+
+        products = res.data.payload;
+        productsPagination = res.data.pagination;
+    }
+</script>
+{productsPagination.page + " " + productsPagination.totalPages}
 <div class="container-fluid p-3">
     <h1 class="content-title mb-3">Products</h1>
     <div class="d-flex gap-2">
@@ -53,7 +78,7 @@
         </ol>
     </nav>
     <div class="input-group mb-2 specific-w-350">
-        <input type="text" class="form-control mr-10 w-quarter" placeholder="Search {queryType}">
+        <input bind:value={searchProductInput} on:keyup={searchProductsDebounce} type="text" class="form-control mr-10 w-quarter" placeholder="Search {queryType}">
         <button on:click={() => queryType == "products" ? queryType = "categories" : queryType = "products" } type="button" class="btn btn-secondary">
             {#if queryType == "products"}
                 Products
@@ -64,6 +89,7 @@
     </div>
     {#if queryType == "products"}
         <ProductList bind:products={products} />
+        <Pagination on:prevPage={prevPage} on:nextPage={nextPage} bind:totalPages={productsPagination.totalPages} bind:currentPage={productsPagination.page} />
     {:else if queryType == "categories"}
         <h2>Categories</h2>
     {/if}

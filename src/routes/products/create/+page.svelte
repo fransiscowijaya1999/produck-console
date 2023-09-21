@@ -1,25 +1,27 @@
 <script>
-    import { goto } from "$app/navigation";
+    import axios from "axios";
+
     import ProductForm from "$lib/ProductForm.svelte";
 
-    let buttonState = "normal";
-    let product = {
+    const productRaw = {
         name: "",
         price: 0,
         cost: 0,
         barcode: ""
     };
 
+    let buttonState = "normal";
+    let product = Object.assign({}, productRaw);
+
     async function saveProduct() {
         try {
             buttonState = "saving"
 
-            // Save the product
-            console.log(product);
-            await new Promise(resolve => setTimeout(resolve, 1000));
+            await axios.post("/products", product);
 
-            // Go to products/{id}
-            goto("/products");
+            product = Object.assign({}, productRaw);
+            // Show saved alert
+            buttonState = "normal";
         } catch (error) {
             
         }
@@ -32,7 +34,7 @@
     <div class="form-wrapper specific-w-350">
         <ProductForm bind:name={product.name} bind:price={product.price} bind:cost={product.cost} bind:barcode={product.barcode} />
     </div>
-    <button on:click={saveProduct} class="btn btn-primary btn-lg mt-3" type="button">
+    <button on:click={saveProduct} class="btn btn-primary btn-lg mt-3" class:disabled={buttonState == "saving"} type="button">
         {#if buttonState == "normal"}
             Save
         {:else if buttonState == "saving"}
