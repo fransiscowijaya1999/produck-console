@@ -3,8 +3,11 @@
 import axios from 'axios';
 
 export async function load({ params }) {
-    const res = await axios(`/products`);
-    console.log(res);
+    const productsRes = await axios(`/products`);
+    const categoriesRes = await axios(`/categories?parentId=null`);
 
-	return { ...res.data };
+	return {
+        productsRes: productsRes.data,
+        categoriesRes: categoriesRes.data,
+    };
 }
