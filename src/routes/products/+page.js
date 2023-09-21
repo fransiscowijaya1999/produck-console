@@ -4,7 +4,7 @@ import axios from 'axios';
 
 export async function load({ params }) {
     const productsRes = await axios(`/products`);
-    const categoriesRes = await axios(`/categories?parentId=null`);
+    const categoriesRes = await axios(`/categories`);
 
 	return {
         productsRes: productsRes.data,

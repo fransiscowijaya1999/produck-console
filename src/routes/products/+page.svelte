@@ -4,7 +4,7 @@
 
     import Pagination from "$lib/Pagination.svelte";
     import ProductList from "$lib/ProductList.svelte";
-    import CategoryList from "$lib/CategoryList.svelte";
+    import CategorySelectionList from "$lib/CategorySelectionList.svelte";
 
     /** @type {import('./$types').PageData} */
 	export let data;
@@ -16,7 +16,7 @@
     let searchProductsInput = "";
     let searchCategoriesInput = "";
     let queryType = "products";
-    /** @type {string | any[]} */
+    /** @type {any[]} */
     let selectedCategories = [];
     let products = data.productsRes.payload ?? [];
     let productsPagination = data.productsRes.pagination;
@@ -61,6 +61,18 @@
         categories = res.data.payload;
         categoriesPagination = res.data.pagination;
     }
+
+    function selectCategory(e) {
+        const { category } = e.detail;
+        selectedCategories = [...selectedCategories, category];
+
+        categories = searchCategories("", `parentId=${selectedCategories[selectedCategories.length - 1].id}`);
+    }
+
+    function resetSelectedCategories() {
+        categories = searchCategories("");
+    }
+
 </script>
 <div class="container-fluid p-3">
     <h1 class="content-title mb-3">Products</h1>
@@ -74,7 +86,7 @@
                 {#if selectedCategories.length == 0}
                     All
                 {:else}
-                    <a href="/products" on:click={() => selectedCategories = []}>All</a>
+                    <a href="/products" on:click={resetSelectedCategories}>All</a>
                 {/if}
             </li>
             {#each selectedCategories as selectedCategory, i}
@@ -106,7 +118,7 @@
             <Pagination on:prevPage={prevProductsPage} on:nextPage={nextProductsPage} bind:totalPages={productsPagination.totalPages} bind:currentPage={productsPagination.page} />
         {/if}
     {:else if queryType == "categories"}
-        <CategoryList bind:categories={categories} />
+        <CategorySelectionList bind:categories={categories} on:selectCategory={selectCategory} />
         {#if categories.length > 0}
             <Pagination on:prevPage={prevCategoriesPage} on:nextPage={nextCategoriesPage} bind:totalPages={categoriesPagination.totalPages} bind:currentPage={categoriesPagination.page} />
         {/if}
