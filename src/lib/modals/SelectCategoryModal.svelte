@@ -1,4 +1,5 @@
 <script>
+    import { fetchServer } from "$lib/fetch";
     import { createEventDispatcher } from "svelte";
 
     const dispatch = createEventDispatcher();
@@ -25,7 +26,7 @@
 
     async function searchCategories(keyword = "") {
         if (keyword.length < 3) return [];
-        const res = await fetch(`http://localhost:5000/categories/?keyword=${keyword}`);
+        const res = await fetchServer(`categories/?keyword=${keyword}`);
         const data = await res.json();
 
         if (data.payload) return data.payload;

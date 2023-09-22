@@ -18,11 +18,11 @@
     let queryType = "products";
     /** @type {any[]} */
     let selectedCategories = [];
-    let products = data.productsRes.payload ?? [];
-    let productsPagination = data.productsRes.pagination;
+    let products = data.productsData.payload ?? [];
+    let productsPagination = data.productsData.pagination;
 
-    let categories = data.categoriesRes.payload ?? [];
-    let categoriesPagination = data.categoriesRes.pagination;
+    let categories = data.categoriesData.payload ?? [];
+    let categoriesPagination = data.categoriesData.pagination;
 
     $: selectedProducts = products.filter(p => p.selected);
     $: searchCategoriesParentId = selectedCategories.length > 0 ? `parentId=${selectedCategories[selectedCategories.length - 1].id}` : undefined;

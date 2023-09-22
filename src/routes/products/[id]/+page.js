@@ -1,9 +1,10 @@
 /** @type {import('./$types').PageLoad} */
 
-import axios from 'axios';
+import { ssFetch } from '$lib/fetch';
 
-export async function load({ params }) {
-    const res = await axios(`/products/${params.id}`);
+export async function load({ fetch, params }) {
+    const res = await ssFetch(fetch, `products/${params.id}`);
+    const data = await res.json();
 
-	return { ...res.data };
+	return { ...data };
 }

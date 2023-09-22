@@ -1,6 +1,5 @@
 <script>
-    import axios from "axios";
-
+    import { fetchServer } from "$lib/fetch";
     import ProductForm from "$lib/ProductForm.svelte";
     import SelectCategoryModal from "$lib/modals/SelectCategoryModal.svelte";
 
@@ -31,10 +30,16 @@
 
     async function saveProduct() {
         try {
-            buttonState = "saving"
+            buttonState = "saving";
 
             product.categoryId = product.category ? product.category.id : null;
-            await axios.post("/products", product);
+            await fetchServer("products", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(product)
+            });
 
             successMessage = "Product saved.";
             product = Object.assign({}, productRaw);
