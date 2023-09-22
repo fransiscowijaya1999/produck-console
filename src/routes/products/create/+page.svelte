@@ -23,6 +23,7 @@
         showSelectCategoryModal = !showSelectCategoryModal;
     }
 
+    /** @param {*} event */
     function handleCategoryClick(event) {
         showSelectCategoryModal = false;
         product.category = event.detail.category;
@@ -33,22 +34,23 @@
             buttonState = "saving";
 
             product.categoryId = product.category ? product.category.id : null;
-            await fetchServer("products", {
+            const res = await fetchServer("products", {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(product)
             });
+
+            const result = await res.json();
+
+            if (result.isError) return errorMessage = result.responseException.exceptionMessage;
 
             successMessage = "Product saved.";
             product = Object.assign({}, productRaw);
             buttonState = "normal";
 
             setTimeout(() => successMessage = "", 5000);
-        } catch (error) {
-            const res = error.response.data;
-            if (res.isError) errorMessage = res.responseException.exceptionMessage;
+        } catch (/** @type {*} */ error) {
+            errorMessage = error;
 
             buttonState = "normal";
         }

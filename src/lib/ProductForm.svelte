@@ -22,7 +22,9 @@
         dispatch("handleSelectCategoryClick");
     }
 
+    /** @param {InputEvent} e*/
     function priceBlurHandler(e) {
+        if (!e.currentTarget) return;
         const tempValue = parseInt(e.currentTarget.value.replace(/\D/g,''));
 
         if (isNaN(tempValue)) {
@@ -33,8 +35,10 @@
         price = tempValue;
     }
 
+    /** @param {InputEvent} e*/
     function costBlurHandler(e) {
-        const tempValue = parseInt(e.currentTarget.value.replace(/\D/g,''));
+        if (!e.currentTarget) return;
+        const tempValue = parseInt((e.currentTarget).value.replace(/\D/g,''));
 
         if (isNaN(tempValue)) {
             cost = 0;

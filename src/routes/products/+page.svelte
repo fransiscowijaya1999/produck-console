@@ -1,10 +1,10 @@
 <script>
-    import axios from "axios";
     import { goto } from "$app/navigation";
 
     import Pagination from "$lib/Pagination.svelte";
     import ProductList from "$lib/ProductList.svelte";
     import CategorySelectionList from "$lib/CategorySelectionList.svelte";
+    import { fetchServer } from "$lib/fetch";
 
     /** @type {import('./$types').PageData} */
 	export let data;
@@ -52,16 +52,18 @@
 
     async function searchProducts(keyword = "", additionalQuery = "") {
         if (selectedCategories.length > 0) additionalQuery += `&categoryId=${selectedCategories[selectedCategories.length - 1].id}`;
-        const res = await axios(`/products/?keyword=${keyword}${additionalQuery ? "&" + additionalQuery : ""}`);
+        const res = await fetchServer(`products/?keyword=${keyword}${additionalQuery ? "&" + additionalQuery : ""}`);
+        const result = await res.json();
 
-        products = res.data.payload ?? [];
-        productsPagination = res.data.pagination;
+        products = result.payload ?? [];
+        productsPagination = result.pagination;
     }
     async function searchCategories(keyword = "", additionalQuery = "") {
-        const res = await axios(`/categories/?keyword=${keyword}${additionalQuery ? "&" + additionalQuery : ""}`);
+        const res = await fetchServer(`categories/?keyword=${keyword}${additionalQuery ? "&" + additionalQuery : ""}`);
+        const result = await res.json();
 
-        categories = res.data.payload ?? [];
-        categoriesPagination = res.data.pagination;
+        categories = result.payload ?? [];
+        categoriesPagination = result.pagination;
     }
 
     function selectCategory(e) {
