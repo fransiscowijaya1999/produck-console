@@ -25,6 +25,7 @@
     let categoriesPagination = data.categoriesRes.pagination;
 
     $: selectedProducts = products.filter(p => p.selected);
+    $: searchCategoriesParentId = selectedCategories.length > 0 ? `parentId=${selectedCategories[selectedCategories.length - 1].id}` : undefined;
 
     const searchProductsDebounce = () => {
         clearTimeout(searchProductsTimer);
@@ -32,7 +33,7 @@
     }
     const searchCategoriesDebounce = () => {
         clearTimeout(searchCategoriesTimer);
-        searchCategoriesTimer = setTimeout(async () => await searchCategories(searchCategoriesInput), 500);
+        searchCategoriesTimer = setTimeout(async () => await searchCategories(searchCategoriesInput, searchCategoriesParentId), 500);
     }
 
     async function nextProductsPage() {
@@ -43,22 +44,23 @@
     }
 
     async function nextCategoriesPage() {
-        await searchCategories(searchCategoriesInput, `page=${categoriesPagination.page + 1}`);
+        await searchCategories(searchCategoriesInput, `${searchCategoriesParentId}&page=${categoriesPagination.page + 1}`);
     }
     async function prevCategoriesPage() {
-        await searchCategories(searchCategoriesInput, `page=${categoriesPagination.page - 1}`);
+        await searchCategories(searchCategoriesInput, `${searchCategoriesParentId}&page=${categoriesPagination.page - 1}`);
     }
 
     async function searchProducts(keyword = "", additionalQuery = "") {
+        if (selectedCategories.length > 0) additionalQuery += `&categoryId=${selectedCategories[selectedCategories.length - 1].id}`;
         const res = await axios(`/products/?keyword=${keyword}${additionalQuery ? "&" + additionalQuery : ""}`);
 
-        products = res.data.payload;
+        products = res.data.payload ?? [];
         productsPagination = res.data.pagination;
     }
     async function searchCategories(keyword = "", additionalQuery = "") {
         const res = await axios(`/categories/?keyword=${keyword}${additionalQuery ? "&" + additionalQuery : ""}`);
 
-        categories = res.data.payload;
+        categories = res.data.payload ?? [];
         categoriesPagination = res.data.pagination;
     }
 
@@ -66,11 +68,14 @@
         const { category } = e.detail;
         selectedCategories = [...selectedCategories, category];
 
-        categories = searchCategories("", `parentId=${selectedCategories[selectedCategories.length - 1].id}`);
+        searchCategories("", `parentId=${selectedCategories[selectedCategories.length - 1].id}`);
+        searchProducts();
     }
 
     function resetSelectedCategories() {
-        categories = searchCategories("");
+        selectedCategories = [];
+        searchCategories("");
+        searchProducts();
     }
 
 </script>

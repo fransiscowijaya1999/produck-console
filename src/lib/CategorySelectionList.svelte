@@ -22,7 +22,7 @@
         <tbody>
             {#each categories as category, i}
                 <tr>
-                    <th><a on:click={() => selectCategory(category)}>{category.name}</a></th>
+                    <th><a href="/products" on:click={() => selectCategory(category)}>{category.name}</a></th>
                     <th>{category.productsCount}</th>
                     <th>{category.childCategoriesCount}</th>
                 </tr>
