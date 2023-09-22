@@ -1,10 +1,10 @@
 /** @type {import('./$types').PageLoad} */
 
-export async function load({ fetch, params, url }) {
-    const res = await fetch(`http://localhost:5000/categories?keyword=${url.searchParams.keyword}`);
+import { ssFetch } from '$lib/fetch';
+
+export async function load({ fetch, params }) {
+    const res = await ssFetch(fetch, "categories");
     const data = await res.json();
 
-	return {
-        ...data
-    };
+	return { ...data };
 }

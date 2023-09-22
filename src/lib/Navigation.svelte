@@ -42,6 +42,9 @@
     <li class:active={path == "/products"}>
       <a href="/products">Products</a>
     </li>
+    <li class:active={path == "/categories"}>
+      <a href="/categories">Categories</a>
+    </li>
     <li class:active={path == "/inventory"}>
       <a href="/inventory">Inventory</a>
     </li>

@@ -81,6 +81,7 @@
     }
 
 </script>
+
 <div class="container-fluid p-3">
     <h1 class="content-title mb-3">Products</h1>
     <div class="d-flex gap-2">
