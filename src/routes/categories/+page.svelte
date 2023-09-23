@@ -4,8 +4,6 @@
     import Pagination from "$lib/Pagination.svelte";
     import { fetchServer } from "$lib/fetch";
 
-    export let data;
-
     /**
      * @type {any[]}
      */
