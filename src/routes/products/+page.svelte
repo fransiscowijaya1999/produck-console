@@ -19,16 +19,15 @@
 
     let searchProductsInput = "";
     let searchCategoriesInput = "";
+    let searchCategoriesInputElement;
 
     let productsCurrentPage = 1;
-
-    let categories = data.categoriesData.payload ?? [];
-    let categoriesPagination = data.categoriesData.pagination;
+    let categoriesCurrentPage = 1;
 
     $: lastSelectedCategoryId = selectedCategories.length > 0 ? selectedCategories[selectedCategories.length - 1].id : null;
 
-    $: searchCategoriesParentId = selectedCategories.length > 0 ? `parentId=${selectedCategories[selectedCategories.length - 1].id}` : undefined;
     $: productsPromise = (searchProducts)(searchProductsInput, lastSelectedCategoryId, productsCurrentPage);
+    $: categoriesPromise = (searchCategories)(searchCategoriesInput, lastSelectedCategoryId, categoriesCurrentPage);
 
     const searchProductsDebounce = (event) => {
         clearTimeout(searchProductsTimer);
@@ -37,16 +36,12 @@
             productsCurrentPage = 1;
         }, 500);
     }
-    const searchCategoriesDebounce = () => {
+    const searchCategoriesDebounce = (event) => {
         clearTimeout(searchCategoriesTimer);
-        searchCategoriesTimer = setTimeout(async () => await searchCategories(searchCategoriesInput, searchCategoriesParentId), 500);
-    }
-
-    async function nextCategoriesPage() {
-        await searchCategories(searchCategoriesInput, `${searchCategoriesParentId}&page=${categoriesPagination.page + 1}`);
-    }
-    async function prevCategoriesPage() {
-        await searchCategories(searchCategoriesInput, `${searchCategoriesParentId}&page=${categoriesPagination.page - 1}`);
+        searchCategoriesTimer = setTimeout(() => {
+            searchCategoriesInput = event.target.value;
+            categoriesCurrentPage = 1;
+        }, 500);
     }
 
     async function searchProducts(keyword = "", categoryId = null, currentPage = 1) {
@@ -73,26 +68,42 @@
 
         return returnData;
     }
-    async function searchCategories(keyword = "", additionalQuery = "") {
-        const res = await fetchServer(`categories/?keyword=${keyword}${additionalQuery ? "&" + additionalQuery : ""}`);
+    async function searchCategories(keyword = "", parentId = null, currentPage = 1) {
+        let searchParams = "";
+
+        if (parentId) searchParams += `&parentId=${parentId}`;
+
+        const res = await fetchServer(`categories/?keyword=${keyword}${searchParams}&page=${currentPage}`);
         const result = await res.json();
 
-        categories = result.payload ?? [];
-        categoriesPagination = result.pagination;
+        const returnData = {
+            categories: [],
+            pagination: {
+                totalPages: 1,
+                page: 1,
+                pageSize: 10
+            }
+        }
+
+        if (result.payload) {
+            returnData.categories = result.payload;
+            returnData.pagination = result.pagination;
+        }
+
+        return returnData;
     }
 
     function selectCategory(e) {
         const { category } = e.detail;
         selectedCategories = [...selectedCategories, category];
 
-        searchCategories("", `parentId=${selectedCategories[selectedCategories.length - 1].id}`);
-        searchProducts();
+        searchCategoriesInput = "";
+        searchCategoriesInputElement.value = "";
+        categoriesCurrentPage = 1;
     }
 
     function resetSelectedCategories() {
         selectedCategories = [];
-        searchCategories("");
-        searchProducts();
     }
 
     function handleBreadcrumbClick(index) {
@@ -129,7 +140,7 @@
         {#if queryType == "products"}
             <input on:keyup={searchProductsDebounce} type="text" class="form-control mr-10 w-quarter" placeholder="Search {queryType}">
         {:else if queryType == "categories"}
-            <input bind:value={searchCategoriesInput} on:keyup={searchCategoriesDebounce} type="text" class="form-control mr-10 w-quarter" placeholder="Search {queryType}">
+            <input bind:this={searchCategoriesInputElement} on:keyup={searchCategoriesDebounce} type="text" class="form-control mr-10 w-quarter" placeholder="Search {queryType}">
         {/if}
         <button on:click={() => queryType == "products" ? queryType = "categories" : queryType = "products" } type="button" class="btn btn-secondary">
             {#if queryType == "products"}
@@ -149,9 +160,13 @@
             {/if}
         {/await}
     {:else if queryType == "categories"}
-        <CategorySelectionList bind:categories={categories} on:selectCategory={selectCategory} />
-        {#if categories.length > 0}
-            <Pagination on:prevPage={prevCategoriesPage} on:nextPage={nextCategoriesPage} bind:totalPages={categoriesPagination.totalPages} bind:currentPage={categoriesPagination.page} />
-        {/if}
+        {#await categoriesPromise}
+            <h1>Loading...</h1>
+        {:then { categories, pagination }}
+            <CategorySelectionList categories={categories} on:selectCategory={selectCategory} />
+            {#if categories.length > 0}
+                <Pagination on:prevPage={() => categoriesCurrentPage -= 1} on:nextPage={() => categoriesCurrentPage += 1} totalPages={pagination.totalPages} currentPage={pagination.page} />
+            {/if}
+        {/await}
     {/if}
 </div>
