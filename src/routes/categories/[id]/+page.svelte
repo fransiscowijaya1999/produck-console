@@ -61,7 +61,7 @@
 {/if}
 <div class="container-fluid">
     <button class="btn btn-secondary mt-3" on:click={() => history.back()}>Back</button>
-    <h1>Product</h1>
+    <h1 class="mt-3">Edit Category</h1>
     <div class="form-wrapper specific-w-350">
         <CategoryForm
             on:handleSelectCategoryClick={handleSelectCategoryClick}

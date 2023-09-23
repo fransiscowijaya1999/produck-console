@@ -4,6 +4,8 @@
     import Pagination from "$lib/Pagination.svelte";
     import { fetchServer } from "$lib/fetch";
 
+    export let data;
+
     /**
      * @type {any[]}
      */
@@ -13,10 +15,7 @@
      * @type {HTMLInputElement}
      */
     let searchCategoriesInputElement;
-    let categoriesPagination = {
-        totalPages: 1,
-        page: 1,
-    };
+    let categoriesPagination = data.pagination;
 
     /**
      * @type {number}
@@ -24,10 +23,10 @@
     let searchCategoriesTimer;
 
     $: lastSelectedCategory = selectedCategories.length > 0 ? selectedCategories[selectedCategories.length - 1].id : "";
-    $: categoriesPromise = (searchCategories)(searchCategoriesInput, lastSelectedCategory);
+    $: categoriesPromise = (searchCategories)(searchCategoriesInput, lastSelectedCategory, categoriesPagination);
 
-    async function searchCategories(keyword = "", parentId = "") {
-        const res = await fetchServer(`categories/?keyword=${keyword}&parentId=${parentId}`);
+    async function searchCategories(keyword = "", parentId = "", pagination) {
+        const res = await fetchServer(`categories/?keyword=${keyword}&parentId=${parentId}&page=${pagination.page}&pageSize=${pagination.pageSize}`);
         const result = await res.json();
 
         if (result.payload) return result.payload;

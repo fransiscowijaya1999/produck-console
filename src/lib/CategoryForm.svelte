@@ -21,7 +21,7 @@
     <input bind:value={name} type="text" id="product-name" class="form-control" required>
 </div>
 <div class="mb-3">
-    <label for="product-category" class="form-label">Category</label>
+    <label for="product-category" class="form-label">Parent Category</label>
     <div class="input-group">
         <button on:click={handleSelectCategoryClick} class="btn btn-secondary">Select Category</button>
         <input value={category ? category.name : ""} type="text" id="product-category" readonly class="form-control">
