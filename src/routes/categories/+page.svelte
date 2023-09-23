@@ -15,7 +15,7 @@
      * @type {HTMLInputElement}
      */
     let searchCategoriesInputElement;
-    let categoriesPagination = data.pagination;
+    let categoriesCurrentPage = 1;
 
     /**
      * @type {number}
@@ -23,14 +23,26 @@
     let searchCategoriesTimer;
 
     $: lastSelectedCategory = selectedCategories.length > 0 ? selectedCategories[selectedCategories.length - 1].id : "";
-    $: categoriesPromise = (searchCategories)(searchCategoriesInput, lastSelectedCategory, categoriesPagination);
+    $: categoriesPromise = (searchCategories)(searchCategoriesInput, lastSelectedCategory, categoriesCurrentPage);
 
-    async function searchCategories(keyword = "", parentId = "", pagination) {
-        const res = await fetchServer(`categories/?keyword=${keyword}&parentId=${parentId}&page=${pagination.page}&pageSize=${pagination.pageSize}`);
+    async function searchCategories(keyword = "", parentId = "", currentPage) {
+        const res = await fetchServer(`categories/?keyword=${keyword}&parentId=${parentId}&page=${currentPage}`);
         const result = await res.json();
 
-        if (result.payload) return result.payload;
-        return [];
+        const returnData = {
+            categories: [],
+            pagination: {
+                totalPages: 1,
+                page: 1,
+            }
+        }
+
+        if (result.payload) {
+            returnData.categories = result.payload;
+            returnData.pagination = result.pagination;
+        };
+
+        return returnData;
     }
 
     async function deleteCategory(event) {
@@ -49,8 +61,10 @@
     function selectCategory(e) {
         const { category } = e.detail;
         selectedCategories = [...selectedCategories, category];
+
         searchCategoriesInputElement.value = "";
         searchCategoriesInput = "";
+        categoriesCurrentPage = 1;
     }
 
     /**
@@ -98,14 +112,14 @@
     </div>
         {#await categoriesPromise}
             <h1>Loading...</h1>
-        {:then categories} 
+        {:then { categories, pagination }} 
             <CategoryList categories={categories} on:deleteCategory={deleteCategory} on:selectCategory={selectCategory} />
             {#if categories.length > 0}
                 <Pagination
-                    on:prevPage={() => categoriesPagination.page -= 1}
-                    on:nextPage={() => categoriesPagination.page += 1}
-                    bind:totalPages={categoriesPagination.totalPages}
-                    bind:currentPage={categoriesPagination.page}
+                    on:prevPage={() => categoriesCurrentPage -= 1}
+                    on:nextPage={() => categoriesCurrentPage += 1}
+                    totalPages={pagination.totalPages}
+                    currentPage={pagination.page}
                 />
             {/if}
         {/await}
