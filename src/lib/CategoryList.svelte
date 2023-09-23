@@ -1,4 +1,5 @@
 <script>
+    import { goto } from "$app/navigation";
     import { createEventDispatcher } from "svelte";
 
     export let categories = [];
@@ -7,6 +8,10 @@
 
     function selectCategory(category) {
         dispatch("selectCategory", { category });
+    }
+
+    function deleteCategory(categoryId) {
+        dispatch("deleteCategory", { categoryId });
     }
 </script>
 
@@ -22,7 +27,11 @@
         <tbody>
             {#each categories as category, i}
                 <tr>
-                    <th><a href="/categories" on:click={() => selectCategory(category)}>{category.name}</a></th>
+                    <th>
+                        <button on:click={() => deleteCategory(category.id)} class="btn btn-sm btn-outline-danger me-1">x</button>
+                        <button on:click={() => goto(`/categories/${category.id}`)} class="btn btn-sm btn-secondary me-1">edit</button>
+                        <a href="/categories" on:click={() => selectCategory(category)}>{category.name}</a>
+                    </th>
                     <th>{category.productsCount}</th>
                     <th>{category.childCategoriesCount}</th>
                 </tr>

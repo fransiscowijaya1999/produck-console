@@ -9,6 +9,10 @@
      */
     let selectedCategories = [];
     let searchCategoriesInput = "";
+    /**
+     * @type {HTMLInputElement}
+     */
+    let searchCategoriesInputElement;
     let categoriesPagination = {
         totalPages: 1,
         page: 1,
@@ -30,12 +34,23 @@
         return [];
     }
 
+    async function deleteCategory(event) {
+        const { categoryId } = event.detail;
+        
+        await fetchServer(`categories/${categoryId}`, {
+            method: "DELETE"
+        });
+
+        searchCategoriesInput = searchCategoriesInput;
+    }
+
     /**
      * @param {{ detail: { category: any; }; }} e
      */
     function selectCategory(e) {
         const { category } = e.detail;
         selectedCategories = [...selectedCategories, category];
+        searchCategoriesInputElement.value = "";
         searchCategoriesInput = "";
     }
 
@@ -45,6 +60,14 @@
     function handleBreadcrumbClick(index) {
         selectedCategories.splice(index + 1, selectedCategories.length - (index + 1));
         selectedCategories = selectedCategories;
+    }
+
+    /**
+     * @param {KeyboardEvent} event
+     */
+    function handleSearchInputKeyup(event) {
+        clearTimeout(searchCategoriesTimer);
+        searchCategoriesTimer = setTimeout(() => searchCategoriesInput = event.target ? event.target.value : "", 500);
     }
 </script>
 
@@ -72,12 +95,12 @@
         </ol>
     </nav>
     <div class="input-group mb-2 specific-w-350">
-        <input bind:value={searchCategoriesInput} type="text" class="form-control mr-10 w-quarter" placeholder="Search categories">
+        <input bind:this={searchCategoriesInputElement} on:keyup={handleSearchInputKeyup} type="text" class="form-control mr-10 w-quarter" placeholder="Search categories">
     </div>
         {#await categoriesPromise}
             <h1>Loading...</h1>
         {:then categories} 
-            <CategoryList categories={categories} on:selectCategory={selectCategory} />
+            <CategoryList categories={categories} on:deleteCategory={deleteCategory} on:selectCategory={selectCategory} />
             {#if categories.length > 0}
                 <Pagination
                     on:prevPage={() => categoriesPagination.page -= 1}

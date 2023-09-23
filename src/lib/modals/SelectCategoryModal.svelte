@@ -1,6 +1,9 @@
 <script>
     import { fetchServer } from "$lib/fetch";
     import { createEventDispatcher } from "svelte";
+    
+    /** @type {number | null} */
+    export let excludeId = null;
 
     const dispatch = createEventDispatcher();
 
@@ -26,7 +29,11 @@
 
     async function searchCategories(keyword = "") {
         if (keyword.length < 3) return [];
-        const res = await fetchServer(`categories/?keyword=${keyword}`);
+
+        let queryString = `keyword=${keyword}`;
+        if (excludeId) queryString += `&exclude=${excludeId}`;
+
+        const res = await fetchServer(`categories/?${queryString}`);
         const data = await res.json();
 
         if (data.payload) return data.payload;
