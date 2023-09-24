@@ -1,14 +1,16 @@
 <script>
     import { goto } from "$app/navigation";
+    import { createEventDispatcher } from "svelte";
 
     export let locations = [];
+    const dispatch = createEventDispatcher();
 
     function deleteLocation(locationId) {
-
+        dispatch("deleteLocation", { locationId });
     }
 
     function selectLocation(location) {
-        
+        dispatch("selectLocation", { location });
     }
 </script>
 
@@ -32,7 +34,7 @@
         </tbody>
     </table>
 {:else if locations.length == 0}
-    <h1 class="text-center mt-5 mb-5">No Category yet.</h1>
+    <h1 class="text-center mt-5 mb-5">No Location yet.</h1>
 {:else}
     <h1 class="text-center mt-5 mb-5">Loading...</h1>
 {/if}

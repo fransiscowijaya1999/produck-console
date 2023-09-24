@@ -40,6 +40,8 @@
             returnData.pagination = result.pagination;
         };
 
+        if (!result.payload && categoriesCurrentPage > 1) categoriesCurrentPage -= 1;
+
         return returnData;
     }
 
@@ -50,7 +52,7 @@
             method: "DELETE"
         });
 
-        searchCategoriesInput = searchCategoriesInput;
+        categoriesPromise = (searchCategories)(searchCategoriesInput, lastSelectedCategory, categoriesCurrentPage);
     }
 
     /**

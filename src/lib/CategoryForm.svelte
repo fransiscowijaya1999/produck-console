@@ -17,14 +17,14 @@
 </script>
 
 <div class="mb-3">
-    <label for="product-name" class="form-label">Name</label>
-    <input bind:value={name} type="text" id="product-name" class="form-control" required>
+    <label for="category-name" class="form-label">Name</label>
+    <input bind:value={name} type="text" id="category-name" class="form-control" required>
 </div>
 <div class="mb-3">
-    <label for="product-category" class="form-label">Parent Category</label>
+    <label for="parent-category" class="form-label">Parent Category</label>
     <div class="input-group">
         <button on:click={handleSelectCategoryClick} class="btn btn-secondary">Select Category</button>
-        <input value={category ? category.name : ""} type="text" id="product-category" readonly class="form-control">
+        <input value={category ? category.name : ""} type="text" id="parent-category" readonly class="form-control">
         <button on:click={handleResetCategoryClick} class="btn btn-danger">Reset</button>
     </div>
 </div>
