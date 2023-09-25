@@ -1,4 +1,5 @@
 <script>
+    import { calculateMargin } from "./marginCalculator";
     import { createEventDispatcher } from "svelte";
 
     export let name = "";
@@ -54,7 +55,7 @@
     <input bind:value={name} type="text" id="product-name" class="form-control" required>
 </div>
 <div class="mb-3">
-    <label for="product-price" class="form-label">Price</label>
+    <label for="product-price" class="form-label">Price (<storng>{calculateMargin(price, cost)}</storng>% Margin)</label>
     <input on:blur={priceBlurHandler} value={priceFormatted} type="text" id="product-price" class="form-control">
 </div>
 <div class="mb-3">

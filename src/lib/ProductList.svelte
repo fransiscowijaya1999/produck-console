@@ -1,4 +1,6 @@
 <script>
+    import { goto } from "$app/navigation";
+    import { calculateMargin } from "./marginCalculator";
     export let products = [];
 </script>
 
@@ -10,6 +12,7 @@
                 <th>Name</th>
                 <th>Price</th>
                 <th>Cost</th>
+                <th>Margin</th>
                 <th>Stock</th>
             </tr>
         </thead>
@@ -20,7 +23,8 @@
                     <th><a href="/products/{product.id.toString()}">{product.name}</a></th>
                     <th>{product.price}</th>
                     <th>{product.cost}</th>
-                    <th>{product.stock}</th>
+                    <th>{calculateMargin(product.price, product.cost)}%</th>
+                    <th><button on:click={() => goto(`/stocks/product/${product.id}`)} type="button" class="btn btn-secondary btn-sm me-2">edit</button><span>{product.stock}</span></th>
                 </tr>
             {/each}
         </tbody>

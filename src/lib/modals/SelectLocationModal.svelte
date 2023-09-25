@@ -6,6 +6,7 @@
     
     /** @type {number | null} */
     export let excludeId = null;
+    export let productIdToExclude = null;
 
     const dispatch = createEventDispatcher();
 
@@ -17,7 +18,7 @@
     let locationsCurrentPage = 1;
 
     $: lastSelectedLocationId = selectedLocations.length > 0 ? selectedLocations[selectedLocations.length - 1].id : null;
-    $: locationsPromise = (searchLocation)(locationsSearchInputValue, lastSelectedLocationId, locationsCurrentPage, excludeId);
+    $: locationsPromise = (searchLocation)(locationsSearchInputValue, lastSelectedLocationId, locationsCurrentPage, excludeId, productIdToExclude);
 
     function handleBreadcrumbClick(index) {
         selectedLocations.splice(index + 1, selectedLocations.length - (index + 1));
@@ -38,7 +39,7 @@
         dispatch("handleLocationClick", { location });
     }
 
-    async function searchLocation(keyword = "", parentId = null, currentPage = 1, exclude = null) {
+    async function searchLocation(keyword = "", parentId = null, currentPage = 1, exclude = null, idToExclude = null) {
         const returnData = {
             locations: [],
             pagination: {
@@ -52,6 +53,7 @@
 
         if (parentId) searchParams += `&parentId=${parentId}`;
         if (exclude) searchParams += `&exclude=${exclude}`;
+        if (idToExclude) searchParams += `&productIdToExclude=${idToExclude}`;
 
         const res = await fetchServer(`locations/?keyword=${keyword}${searchParams}&page=${currentPage}`);
         const result = await res.json();
