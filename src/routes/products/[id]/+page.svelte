@@ -51,7 +51,7 @@
                 name,
                 price,
                 cost,
-                barcode,
+                barcode: barcode.length > 0 ? barcode : null,
                 categoryId: category ? category.id : null
             };
 

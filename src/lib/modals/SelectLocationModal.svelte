@@ -38,7 +38,7 @@
         dispatch("handleLocationClick", { location });
     }
 
-    async function searchLocation(keyword = "", parentId = null, currentPage = 1, excludeId = null) {
+    async function searchLocation(keyword = "", parentId = null, currentPage = 1, exclude = null) {
         const returnData = {
             locations: [],
             pagination: {
@@ -51,12 +51,12 @@
         let searchParams = "";
 
         if (parentId) searchParams += `&parentId=${parentId}`;
-        if (excludeId) searchParams += `&exclude=${excludeId}`;
+        if (exclude) searchParams += `&exclude=${exclude}`;
 
         const res = await fetchServer(`locations/?keyword=${keyword}${searchParams}&page=${currentPage}`);
         const result = await res.json();
 
-        if (result.payload) {
+        if (result.payload) {   
             returnData.locations = result.payload;
             returnData.pagination = result.pagination;
         }
@@ -72,7 +72,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h1 class="modal-title fs-5">Select Location</h1>
-                <button on:click={() => handleLocationClick(null)} type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button on:click={() => dispatch("handleModalClose")} type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <nav class="mt-3" aria-label="Locations Breadcrumb">

@@ -20,11 +20,15 @@
      */
     let searchCategoriesTimer;
 
-    $: lastSelectedCategory = selectedCategories.length > 0 ? selectedCategories[selectedCategories.length - 1].id : "";
+    $: lastSelectedCategory = selectedCategories.length > 0 ? selectedCategories[selectedCategories.length - 1].id : null;
     $: categoriesPromise = (searchCategories)(searchCategoriesInput, lastSelectedCategory, categoriesCurrentPage);
 
     async function searchCategories(keyword = "", parentId = "", currentPage) {
-        const res = await fetchServer(`categories/?keyword=${keyword}&parentId=${parentId}&page=${currentPage}`);
+        let searchParams = "";
+
+        if (parentId) searchParams += `&parentId=${parentId}`;
+
+        const res = await fetchServer(`categories/?keyword=${keyword}${searchParams}&page=${currentPage}`);
         const result = await res.json();
 
         const returnData = {
@@ -87,7 +91,7 @@
 <div class="container-fluid p-3">
     <h1 class="content-title mb-3">Categories</h1>
     <div class="d-flex gap-2">
-        <button class="btn btn-primary btn-lg" on:click={() => goto("/categories/create")}>Create</button>
+        <button class="btn btn-primary btn-lg" on:click={() => goto(`/categories/create/${lastSelectedCategory}`)}>Create</button>
     </div>
     <nav class="mt-3" aria-label="Category Breadcrumb">
         <ol class="breadcrumb">

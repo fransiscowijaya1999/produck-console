@@ -72,7 +72,7 @@
 <div class="container-fluid p-3">
     <h1 class="mb-3">Inventory</h1>
     <div class="d-flex gap-2">
-        <button class="btn btn-primary btn-lg" on:click={() => goto("/inventory/create")}>Create</button>
+        <button class="btn btn-primary btn-lg" on:click={() => goto(`/inventory/create/${lastSelectedLocationId}`)}>Create</button>
         <button class="btn btn-secondary btn-lg" on:click={() => goto(`/inventory/stocks/${lastSelectedLocationId}`)}>📦 Products</button>
     </div>
     <nav class="mt-3" aria-label="Breadcrumb navigation example">

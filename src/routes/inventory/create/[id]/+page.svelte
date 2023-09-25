@@ -4,9 +4,11 @@
     import LocationForm from "$lib/LocationForm.svelte";
     import SelectLocationModal from "$lib/modals/SelectLocationModal.svelte";
 
+    export let data;
+
     let locationRaw = {
         name: "",
-        parentLocation: null
+        parentLocation: data ? data.payload : null
     }
     let buttonState = "normal";
     let errorMessage = "";
@@ -53,7 +55,7 @@
 </script>
 
 {#if showSelectLocationModal}
-    <SelectLocationModal on:handleLocationClick={handleLocationClick} />
+    <SelectLocationModal on:handleModalClose={() => showSelectLocationModal = false} on:handleLocationClick={handleLocationClick} />
 {/if}
 
 <div class="container-fluid">

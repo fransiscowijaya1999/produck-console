@@ -3,6 +3,8 @@
     import { fetchServer } from "$lib/fetch";
     import SelectCategoryModal from "$lib/modals/SelectCategoryModal.svelte";
 
+    export let data;
+
     let buttonState = "normal";
     let errorMessage = "";
     let successMessage = "";
@@ -10,7 +12,7 @@
 
     let name = "";
     /** @type {* | null} */
-    let parentCategory = null;
+    let parentCategory = data ? data.payload : null;
 
     /** @param {*} event */
     function handleCategoryClick(event) {

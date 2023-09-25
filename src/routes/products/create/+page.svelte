@@ -33,6 +33,7 @@
         try {
             buttonState = "saving";
 
+            product.barcode = product.barcode.length > 0 ? product.barcode : null;
             product.categoryId = product.category ? product.category.id : null;
             const res = await fetchServer("products", {
                 method: "POST",
