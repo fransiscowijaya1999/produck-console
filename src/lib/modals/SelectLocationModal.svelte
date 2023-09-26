@@ -52,6 +52,7 @@
         let searchParams = "";
 
         if (parentId) searchParams += `&parentId=${parentId}`;
+        if (!parentId) searchParams += `&showOnlyRootChilds=true`;
         if (exclude) searchParams += `&exclude=${exclude}`;
         if (idToExclude) searchParams += `&productIdToExclude=${idToExclude}`;
 

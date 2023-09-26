@@ -9,3 +9,13 @@ export function calculateMargin(price, cost) {
 
     return result;
 }
+
+export function displayMargin(price, cost) {
+    const margin = calculateMargin(price, cost);
+
+    let displayed = margin.toString();
+    if (margin > 0) displayed = `<span class="badge text-bg-success">+${margin}%</span>`;
+    if (margin < 0) displayed = `<span class="badge text-bg-danger">-${margin}%</span>`;
+
+    return displayed;
+}

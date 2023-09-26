@@ -126,7 +126,7 @@
 {/if}
 
 <div class="container-fluid p-3">
-    <button class="btn btn-secondary" on:click={() => goto("/inventory")}>Back</button>
+    <button class="btn btn-secondary" on:click={() => goto("/products")}>Back</button>
     <h1 class="mt-3">{product.name}</h1>
     <input bind:this={stocksSearchInputElement} on:keyup={stocksSearchDebounce} type="text" class="mt-3 form-control mr-10 specific-w-250" placeholder="Search locations">
     {#if errorMessage}

@@ -51,6 +51,7 @@
         let searchParams = "";
 
         if (parentId) searchParams += `&parentId=${parentId}`;
+        if (!parentId) searchParams += `&showOnlyRootChilds=true`;
         if (excludeId) searchParams += `&exclude=${excludeId}`;
 
         const res = await fetchServer(`categories/?keyword=${keyword}${searchParams}&page=${currentPage}`);

@@ -51,11 +51,17 @@
     <li class:active={path == "/purchases"}>
       <a href="/purchases">Purchases</a>
     </li>
+    <li class:active={path == "/vendors"}>
+      <a href="/vendors">Vendors</a>
+    </li>
     <li class:active={path == "/sales"}>
       <a href="/sales">Sales</a>
     </li>
     <li class:active={path == "/pos"}>
       <a href="/pos">PoS</a>
+    </li>
+    <li class:active={path == "/customers"}>
+      <a href="/customers">Customers</a>
     </li>
     <li class:active={path == "/users"}>
       <a href="/users">Users</a>

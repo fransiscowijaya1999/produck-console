@@ -3,14 +3,14 @@
     import { fetchServer } from "$lib/fetch";
     
     import Pagination from "$lib/Pagination.svelte";
-    import PosList from "$lib/POSList.svelte";
+    import VendorList from "$lib/VendorList.svelte";
 
     let keyword = "";
     let paginationCurrentPage = 1;
 
-    $: posPromise = (searchPOS)(keyword, paginationCurrentPage);
+    $: vendorsPromise = (searchVendors)(keyword, paginationCurrentPage);
 
-    async function searchPOS(keyword = "", currentPage = 1) {
+    async function searchVendors(keyword = "", currentPage = 1) {
         const returnData = {
             payload: [],
             pagination: {
@@ -21,7 +21,7 @@
 
         let searchParams = "";
 
-        const res = await fetchServer(`pos?keyword=${keyword}${searchParams}&page=${currentPage}`);
+        const res = await fetchServer(`vendors?keyword=${keyword}${searchParams}&page=${currentPage}`);
         const result = await res.json();
         
         if (result.payload) returnData.payload = result.payload;
@@ -32,16 +32,16 @@
 </script>
 
 <div class="container-fluid p-3">
-    <h1 class="mb-3">Point of Sale</h1>
-    <button on:click={() => goto("/pos/create")} class="btn-lg btn btn-primary">Create</button>
+    <h1 class="mb-3">Vendors</h1>
+    <button on:click={() => goto("/vendors/create")} class="btn-lg btn btn-primary">Create</button>
     <div class="mt-3">
-        {#await posPromise}
+        {#await vendorsPromise}
             <h1>Loading...</h1>
         {:then { payload, pagination }}
             {#if payload.length > 0}
-                <PosList posList={payload} />
+                <VendorList {payload} />
             {:else}
-                <h3 class="text-center mt-5 mb-5">No POS found.</h3>
+                <h3 class="text-center mt-5 mb-5">No vendor found.</h3>
             {/if}
             <Pagination
                 on:nextPage={() => paginationCurrentPage += 1}

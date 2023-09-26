@@ -27,6 +27,7 @@
         let searchParams = "";
 
         if (parentId) searchParams += `&parentId=${parentId}`;
+        if (!parentId) searchParams += `&showOnlyRootChilds=true`;
 
         const res = await fetchServer(`categories/?keyword=${keyword}${searchParams}&page=${currentPage}`);
         const result = await res.json();

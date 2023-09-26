@@ -55,7 +55,11 @@
             }
         };
 
-        const res = await fetchServer(`locations?keyword=${keyword}&parentId=${parentLocationId ?? ""}&page=${currentPage}`);
+        let searchParams = "";
+        if (parentLocationId) searchParams += `&parentId=${parentLocationId}`;
+        if (!parentLocationId) searchParams += `&showOnlyRootChilds=true`;
+
+        const res = await fetchServer(`locations?keyword=${keyword}${searchParams}&page=${currentPage}`);
         const result = await res.json();
 
 
