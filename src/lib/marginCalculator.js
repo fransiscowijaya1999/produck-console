@@ -15,7 +15,7 @@ export function displayMargin(price, cost) {
 
     let displayed = margin.toString();
     if (margin > 0) displayed = `<span class="badge text-bg-success">+${margin}%</span>`;
-    if (margin < 0) displayed = `<span class="badge text-bg-danger">-${margin}%</span>`;
+    if (margin < 0) displayed = `<span class="badge text-bg-danger">${margin}%</span>`;
 
     return displayed;
 }
