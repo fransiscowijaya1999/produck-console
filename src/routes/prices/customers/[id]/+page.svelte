@@ -14,11 +14,11 @@
     let listCurrentPage = 1;
 
     let priceRaw = {
-        minQty: 0,
+        minQty: 1,
         price: 0,
         product: null
     };
-    let price = Object.assign({}, priceRaw);
+    let priceToAdd = Object.assign({}, priceRaw);
     let showSelectProductModal = false;
     let buttonState = "";
     let errorMessage = "";
@@ -55,11 +55,16 @@
         const { price } = event.detail;
         price.customerId = customer.id;
 
-        await fetchServer(`customerprices/${price.id}`, {
+        const res = await fetchServer(`customerprices/${price.id}`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(price)
         });
+
+        if (res.status != 204) {
+            const result = await res.json();
+            console.log(result);
+        }
 
         pricesPromise = (searchPrices)(keyword, listCurrentPage);
     }
@@ -76,9 +81,9 @@
 
     async function save() {
         const bodyData = {
-            minQty: price.minQty,
-            price: price.price,
-            productId: price.product ? price.product.id : null,
+            minQty: priceToAdd.minQty,
+            price: priceToAdd.price,
+            productId: priceToAdd.product ? priceToAdd.product.id : null,
             customerId: customer.id
         }
 
@@ -96,7 +101,7 @@
                 if (result.isError) return errorMessage = result.responseException.exceptionMessage;
             }
 
-            price = Object.assign({}, priceRaw);
+            priceToAdd = Object.assign({}, priceRaw);
             successMessage = "Price added.";
             pricesPromise = (searchPrices)(keyword, listCurrentPage);
         } catch (/** @type {*} */ error) {
@@ -112,12 +117,12 @@
 {#if showSelectProductModal}
     <SelectProductModal
         on:handleCloseModalClick={() => showSelectProductModal = false}
-        on:handleProductClick={event => {price.product = event.detail.product; showSelectProductModal = false;}}
+        on:handleProductClick={event => {priceToAdd.product = event.detail.product; showSelectProductModal = false;}}
     />
 {/if}
 
 <div class="container-fluid p-3">
-    <h1 class="mb-3">Prices: <span class="text-secondary">{customer.name}</span></h1>
+    <h1 class="mb-3">Customer Prices: <span class="text-secondary">{customer.name}</span></h1>
     <div class="mt-5">
         <div class="card mb-3">
             <div class="card-body">
@@ -132,16 +137,16 @@
                 {/if}
                 <div class="row g-2">
                     <div class="col-auto">
-                        <button on:click={() => showSelectProductModal = true} type="button" class="btn btn-secondary">{ price.product ? price.product.name : "Select Product"}</button>
+                        <button on:click={() => showSelectProductModal = true} type="button" class="btn btn-secondary">{ priceToAdd.product ? priceToAdd.product.name : "Select Product"}</button>
                     </div>
                     <div class="col-auto">
-                        <input bind:value={price.minQty} type="number" id="minQty" class="form-control specific-w-100" placeholder="Min Qty">
+                        <input bind:value={priceToAdd.minQty} type="number" id="minQty" class="form-control specific-w-100" placeholder="Min Qty">
                     </div>
                     <div class="col-auto">
-                        <input bind:value={price.price} type="number" id="price" class="form-control specific-w-100" placeholder="Price">
+                        <input bind:value={priceToAdd.price} type="number" id="price" class="form-control specific-w-100" placeholder="Price">
                     </div>
                     <div class="col-auto">
-                        <button on:click={save} type="button" class="btn btn-primary" disabled={!price.product}>Add</button>
+                        <button on:click={save} type="button" class="btn btn-primary" disabled={!priceToAdd.product}>Add</button>
                     </div>
                 </div>
             </div>
