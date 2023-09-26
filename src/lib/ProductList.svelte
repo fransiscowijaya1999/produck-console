@@ -14,6 +14,7 @@
                 <th>Cost</th>
                 <th>Margin</th>
                 <th>Stock</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -25,6 +26,7 @@
                     <th>{product.cost}</th>
                     <th>{@html displayMargin(product.price, product.cost)}</th>
                     <th><button on:click={() => goto(`/stocks/product/${product.id}`)} type="button" class="btn btn-secondary btn-sm me-2">edit</button><span>{product.stock}</span></th>
+                    <td><button on:click={() => goto(`/prices/products/${product.id}`)} type="button" class="btn btn-sm btn-secondary">prices</button></td>
                 </tr>
             {/each}
         </tbody>
