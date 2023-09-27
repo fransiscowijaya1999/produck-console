@@ -1,4 +1,5 @@
 <script>
+    import { goto } from "$app/navigation";
     import { formatDistance } from "date-fns";
     export let posList = [];
 </script>
@@ -9,6 +10,7 @@
             <tr>
                 <th>Name</th>
                 <th>Last Session</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -18,6 +20,7 @@
                         <a class="link-secondary" href={`/pos/${pos.id}`}>{pos.name}</a>
                     </th>
                     <td>{pos.lastSession ? formatDistance(new Date(pos.lastSession.openedAt), new Date(), { addSuffix: true }) : "Never opened"}</td>
+                    <td><button on:click={() => goto(`/possessions/pos/${pos.id}`)} type="button" class="btn btn-sm btn-secondary">sessions</button></td>
                 </tr>
             {/each}
         </tbody>

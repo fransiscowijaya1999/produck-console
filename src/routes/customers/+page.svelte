@@ -6,9 +6,15 @@
     import CustomerList from "$lib/CustomerList.svelte";
 
     let keyword = "";
+    let keywordTimer = 0;
     let paginationCurrentPage = 1;
 
     $: customersPromise = (searchCustomers)(keyword, paginationCurrentPage);
+
+    function keywordDebounce(event) {
+        clearTimeout(keywordTimer);
+        keywordTimer = setTimeout(() => keyword = event.target.value, 500);
+    }
 
     async function searchCustomers(keyword = "", currentPage = 1) {
         const returnData = {
@@ -35,6 +41,7 @@
     <h1 class="mb-3">Customers</h1>
     <button on:click={() => goto("/customers/create")} class="btn-lg btn btn-primary">Create</button>
     <div class="mt-3">
+        <input on:keyup={keywordDebounce} type="text" id="keyword" class="form-control specific-w-250 mb-3" placeholder="Search customers">
         {#await customersPromise}
             <h1>Loading...</h1>
         {:then { payload, pagination }}

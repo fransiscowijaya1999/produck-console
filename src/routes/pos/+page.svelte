@@ -6,9 +6,15 @@
     import PosList from "$lib/POSList.svelte";
 
     let keyword = "";
+    let keywordTimer = 0;
     let paginationCurrentPage = 1;
 
     $: posPromise = (searchPOS)(keyword, paginationCurrentPage);
+
+    function keywordDebounce(event) {
+        clearTimeout(keywordTimer);
+        keywordTimer = setTimeout(() => keyword = event.target.value, 500);
+    }
 
     async function searchPOS(keyword = "", currentPage = 1) {
         const returnData = {
@@ -35,6 +41,7 @@
     <h1 class="mb-3">Point of Sale</h1>
     <button on:click={() => goto("/pos/create")} class="btn-lg btn btn-primary">Create</button>
     <div class="mt-3">
+        <input on:keyup={keywordDebounce} type="text" id="keyword" class="form-control specific-w-250 mb-3" placeholder="Search point of sale">
         {#await posPromise}
             <h1>Loading...</h1>
         {:then { payload, pagination }}

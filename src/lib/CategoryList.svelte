@@ -1,6 +1,7 @@
 <script>
     import { goto } from "$app/navigation";
     import { createEventDispatcher } from "svelte";
+    import { toStringDelimit } from "./numbering";
 
     export let categories = [];
 
@@ -32,8 +33,8 @@
                         <button on:click={() => goto(`/categories/${category.id}`)} class="btn btn-sm btn-secondary me-1">edit</button>
                         <a href="/categories" on:click={() => selectCategory(category)}>{category.name}</a>
                     </th>
-                    <th>{category.productsCount}</th>
-                    <th>{category.childCategoriesCount}</th>
+                    <th>{toStringDelimit(category.productsCount)}</th>
+                    <th>{toStringDelimit(category.childCategoriesCount)}</th>
                 </tr>
             {/each}
         </tbody>
