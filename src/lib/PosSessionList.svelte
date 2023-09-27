@@ -23,7 +23,7 @@
             {#each payload as item, i}
                 <tr>
                     <th>
-                        <a class="link-secondary link-underline-opacity-0" href={`/possessions/${item.id}`}>{simpleDateTime(item.openedAt)}</a>
+                        <a class="link-secondary link-underline-opacity-0" href={`/orders/possessions/${item.id}`}>{simpleDateTime(item.openedAt)}</a>
                     </th>
                     <td>{toStringDelimit(item.openingBalance)}</td>
                     <td>{item.closedAt ? simpleDateTime(item.closedAt) : "Not closed yet"}</td>
