@@ -6,6 +6,7 @@
     
     /** @type {number | null} */
     export let excludeId = null;
+    export let authToken = "";
 
     const dispatch = createEventDispatcher();
 
@@ -54,7 +55,9 @@
         if (!parentId) searchParams += `&showOnlyRootChilds=true`;
         if (excludeId) searchParams += `&exclude=${excludeId}`;
 
-        const res = await fetchServer(`categories/?keyword=${keyword}${searchParams}&page=${currentPage}`);
+        const res = await fetchServer(`categories/?keyword=${keyword}${searchParams}&page=${currentPage}`, {
+            headers: { "Authorization": `Bearer ${authToken}` }
+        });
         const result = await res.json();
 
         if (result.payload) {

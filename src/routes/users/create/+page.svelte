@@ -3,6 +3,8 @@
     import { fetchServer } from "$lib/fetch";
     import SelectClaimModal from "$lib/modals/SelectClaimModal.svelte";
 
+    export let data;
+
     let buttonState = "normal";
     let errorMessage = "";
     let successMessage = "";
@@ -24,7 +26,7 @@
 
             const res = await fetchServer(`users`, {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: { "Content-Type": "application/json", "Authorization": `Bearer ${data.authToken}` },
                 body: JSON.stringify(user)
             });
     
@@ -54,7 +56,7 @@
 </script>
 
 {#if showSelectClaimModal}
-    <SelectClaimModal on:handleClaimClick={handleClaimClick} on:handleModalClose={() => showSelectClaimModal = false} />
+    <SelectClaimModal authToken={data.authToken} on:handleClaimClick={handleClaimClick} on:handleModalClose={() => showSelectClaimModal = false} />
 {/if}
 <div class="container-fluid">
     <button class="btn btn-secondary mt-3" on:click={() => history.back()}>Back</button>

@@ -9,6 +9,8 @@
 
     export let data;
 
+    let authHeader = { "Authorization": `Bearer ${data.authToken}` };
+
     let buttonState = "normal";
     let errorMessage = "";
     let successMessage = "";
@@ -30,7 +32,9 @@
             }
         };
 
-        const res = await fetchServer(`users?keyword=${keyword}&posId=${posId}&page=${currentPage}`);
+        const res = await fetchServer(`users?keyword=${keyword}&posId=${posId}&page=${currentPage}`, {
+            headers: authHeader
+        });
         const result = await res.json();
 
         if (result.payload) returnData.payload = result.payload;
@@ -45,7 +49,7 @@
 
             const res = await fetchServer(`pos/${pos.id}`, {
                 method: "PUT",
-                headers: { "Content-Type": "application/json" },
+                headers: { "Content-Type": "application/json", ...authHeader },
                 body: JSON.stringify(pos)
             });
             
@@ -67,7 +71,8 @@
     async function deletePos() {
         try {
             const res = await fetchServer(`pos/${pos.id}`, {
-                method: "DELETE"
+                method: "DELETE",
+                headers: authHeader
             });
     
             if (res.status != 204) {
@@ -94,7 +99,7 @@
 
             const res = await fetchServer("users/assign/pos", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: { "Content-Type": "application/json", ...authHeader },
                 body: JSON.stringify(assignment)
             });
 
@@ -115,7 +120,7 @@
 </script>
 
 {#if showSelectUserModal}
-    <SelectUserModal on:handleModalClose={() => showSelectUserModal = false} on:handleUserClick={assignUser} />
+    <SelectUserModal authToken={data.authToken} on:handleModalClose={() => showSelectUserModal = false} on:handleUserClick={assignUser} />
 {/if}
 
 <div class="container-fluid">

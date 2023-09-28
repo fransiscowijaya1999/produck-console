@@ -4,6 +4,8 @@
 
     import Pagination from "$lib/Pagination.svelte";
 
+    export let authToken = "";
+
     const dispatch = createEventDispatcher();
 
     /** @type {number} */
@@ -37,7 +39,9 @@
             }
         };
 
-        const res = await fetchServer(`customers/?keyword=${keyword}&page=${currentPage}`);
+        const res = await fetchServer(`customers/?keyword=${keyword}&page=${currentPage}`, {
+            headers: { "Authorization": `Bearer ${authToken}` }
+        });
         const result = await res.json();
 
         if (result.payload) {   

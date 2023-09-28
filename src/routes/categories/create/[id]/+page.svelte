@@ -34,7 +34,7 @@
             }
             const res = await fetchServer("categories", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: { "Content-Type": "application/json", "Authorization": `Bearer ${data.authToken}` },
                 body: JSON.stringify(category)
             });
 
@@ -55,7 +55,7 @@
 </script>
 
 {#if showSelectCategoryModal}
-    <SelectCategoryModal on:handleCategoryClick={handleCategoryClick} />
+    <SelectCategoryModal authToken={data.authToken} on:handleCategoryClick={handleCategoryClick} />
 {/if}
 <div class="container-fluid">
     <button class="btn btn-secondary mt-3" on:click={() => history.back()}>Back</button>

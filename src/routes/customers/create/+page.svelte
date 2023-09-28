@@ -3,6 +3,8 @@
     
     import CustomerForm from "$lib/CustomerForm.svelte";
 
+    export let data;
+
     let buttonState = "normal";
     let errorMessage = "";
     let successMessage = "";
@@ -21,7 +23,7 @@
 
             const res = await fetchServer("customers", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: { "Content-Type": "application/json", "Authorization": `Bearer ${data.authToken}` },
                 body: JSON.stringify(customer)
             });
             

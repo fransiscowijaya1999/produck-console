@@ -6,6 +6,8 @@
 
     export let data;
 
+    const authHeader = { "Authorization": `Bearer ${data.authToken}` };
+
     let buttonState = "normal";
     let errorMessage = "";
     let successMessage = "";
@@ -18,7 +20,7 @@
 
             const res = await fetchServer(`vendors/${vendor.id}`, {
                 method: "PUT",
-                headers: { "Content-Type": "application/json" },
+                headers: { "Content-Type": "application/json", ...authHeader },
                 body: JSON.stringify(vendor)
             });
             
@@ -40,7 +42,8 @@
     async function deleteOne() {
         try {
             const res = await fetchServer(`vendors/${vendor.id}`, {
-                method: "DELETE"
+                method: "DELETE",
+                headers: authHeader
             });
     
             if (res.status != 204) {

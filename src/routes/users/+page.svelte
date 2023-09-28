@@ -4,6 +4,8 @@
     import UserList from "$lib/UserList.svelte";
     import { fetchServer } from "$lib/fetch";
 
+    export let data;
+
     let keyword = "";
     let keywordTimer = 0;
     let paginationCurrentPage = 1;
@@ -29,7 +31,9 @@
         let searchParams = "";
         if (claimId) searchParams += `claimId=${claimId}`;
 
-        const res = await fetchServer(`users?keyword=${keyword}${searchParams}&page=${currentPage}`);
+        const res = await fetchServer(`users?keyword=${keyword}${searchParams}&page=${currentPage}`, {
+            headers: { "Authorization": `Bearer ${data.authToken}` }
+        });
         const result = await res.json();
         
         

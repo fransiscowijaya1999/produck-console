@@ -7,6 +7,7 @@
     /** @type {number | null} */
     export let excludeId = null;
     export let productIdToExclude = null;
+    export let authToken = "";
 
     const dispatch = createEventDispatcher();
 
@@ -56,7 +57,9 @@
         if (exclude) searchParams += `&exclude=${exclude}`;
         if (idToExclude) searchParams += `&productIdToExclude=${idToExclude}`;
 
-        const res = await fetchServer(`locations/?keyword=${keyword}${searchParams}&page=${currentPage}`);
+        const res = await fetchServer(`locations/?keyword=${keyword}${searchParams}&page=${currentPage}`, {
+            headers: { "Authorization": `Bearer ${authToken}` }
+        });
         const result = await res.json();
 
         if (result.payload) {   

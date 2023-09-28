@@ -7,6 +7,8 @@
     /** @type {import('./$types').PageData} */
 	export let data;
 
+    const authHeader = { "Authorization": `Bearer ${data.authToken}`}
+
     let errorMessage = "";
     let successMessage = "";
 
@@ -18,7 +20,8 @@
     async function handleDeleteProductClick() {
         try {
             const res = await fetchServer(`products/${data.payload.id}`, {
-                method: "DELETE"
+                method: "DELETE",
+                headers: authHeader
             });
 
             if (res.status != 204) {
@@ -57,7 +60,7 @@
 
             const res = await fetchServer(`products/${data.payload.id}`, {
                 method: "PUT",
-                headers: { "Content-Type": "application/json" },
+                headers: { "Content-Type": "application/json", ...authHeader },
                 body: JSON.stringify(product)
             });
 
@@ -78,7 +81,7 @@
 </script>
 
 {#if showSelectCategoryModal}
-    <SelectCategoryModal on:handleCategoryClick={handleCategoryClick} />
+    <SelectCategoryModal authToken={data.authToken} on:handleCategoryClick={handleCategoryClick} />
 {/if}
 <div class="container-fluid">
     <button class="btn btn-secondary mt-3" on:click={() => history.back()}>Back</button>

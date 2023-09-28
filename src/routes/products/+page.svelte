@@ -49,7 +49,11 @@
 
         if (categoryId) searchParams += `&categoryId=${categoryId}`;
 
-        const res = await fetchServer(`products/?keyword=${keyword}${searchParams}&page=${currentPage}`);
+        const res = await fetchServer(`products/?keyword=${keyword}${searchParams}&page=${currentPage}`, {
+            headers: {
+                "Authorization": `Bearer ${data.authToken}`
+            }
+        });
         const result = await res.json();
 
         const returnData = {
@@ -74,7 +78,9 @@
         if (parentId) searchParams += `&parentId=${parentId}`;
         if (!parentId) searchParams += `&showOnlyRootChilds=true`;
 
-        const res = await fetchServer(`categories/?keyword=${keyword}${searchParams}&page=${currentPage}`);
+        const res = await fetchServer(`categories/?keyword=${keyword}${searchParams}&page=${currentPage}`, {
+            headers: { "Authorization": `Bearer ${data.authToken}` }
+        });
         const result = await res.json();
 
         const returnData = {

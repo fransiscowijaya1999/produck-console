@@ -7,6 +7,8 @@
 
     export let data;
 
+    const authHeader = { "Authorization": `Bearer ${data.authToken}` };
+
     let customer = data.payload;
 
     let keyword = "";
@@ -40,7 +42,9 @@
             }
         };
 
-        const res = await fetchServer(`customerprices/customers/${customer.id}?keyword=${keyword}&page=${listCurrentPage}`);
+        const res = await fetchServer(`customerprices/customers/${customer.id}?keyword=${keyword}&page=${listCurrentPage}`, {
+            headers: authHeader
+        });
         const result = await res.json();
 
         if (result.payload) {
@@ -57,7 +61,7 @@
 
         const res = await fetchServer(`customerprices/${price.id}`, {
             method: "PUT",
-            headers: { "Content-Type": "application/json" },
+            headers: { "Content-Type": "application/json", ...authHeader },
             body: JSON.stringify(price)
         });
 
@@ -73,7 +77,8 @@
         const priceId = event.detail.id;
 
         await fetchServer(`customerprices/${priceId}`, {
-            method: "DELETE"
+            method: "DELETE",
+            headers: authHeader
         });
 
         pricesPromise = (searchPrices)(keyword, listCurrentPage);
@@ -92,7 +97,7 @@
 
             const res = await fetchServer("customerprices", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: { "Content-Type": "application/json", ...authHeader },
                 body: JSON.stringify(bodyData)
             });
             
@@ -116,6 +121,7 @@
 
 {#if showSelectProductModal}
     <SelectProductModal
+        authToken={data.authToken}
         on:handleCloseModalClick={() => showSelectProductModal = false}
         on:handleProductClick={event => {priceToAdd.product = event.detail.product; showSelectProductModal = false;}}
     />

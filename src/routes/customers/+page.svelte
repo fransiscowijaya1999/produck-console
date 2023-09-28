@@ -5,6 +5,8 @@
     import Pagination from "$lib/Pagination.svelte";
     import CustomerList from "$lib/CustomerList.svelte";
 
+    export let data;
+
     let keyword = "";
     let keywordTimer = 0;
     let paginationCurrentPage = 1;
@@ -27,7 +29,9 @@
 
         let searchParams = "";
 
-        const res = await fetchServer(`customers?keyword=${keyword}${searchParams}&page=${currentPage}`);
+        const res = await fetchServer(`customers?keyword=${keyword}${searchParams}&page=${currentPage}`, {
+            headers: { "Authorization": `Bearer ${data.authToken}`}
+        });
         const result = await res.json();
         
         if (result.payload) returnData.payload = result.payload;

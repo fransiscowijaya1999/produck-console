@@ -28,7 +28,9 @@
         if (startDate) searchParams += `&startDate=${startDate}`;
         if (endDate) searchParams += `&endDate=${endDate}`;
 
-        const res = await fetchServer(`possessions/?keyword=${keyword}${searchParams}&posId=${pos.id}&page=${currentPage}`);
+        const res = await fetchServer(`possessions/?keyword=${keyword}${searchParams}&posId=${pos.id}&page=${currentPage}`, {
+            headers: { "Authorization": `Bearer ${data.authToken}` }
+        });
         const result = await res.json();
 
         if (result.payload) {

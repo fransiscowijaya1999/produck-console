@@ -24,7 +24,9 @@
             }
         };
 
-        const res = await fetchServer(`orders/possessions/${session.id}?page=${currentPage}&pageSize=20`);
+        const res = await fetchServer(`orders/possessions/${session.id}?page=${currentPage}&pageSize=20`, {
+            headers: { "Authorization": `Bearer ${data.authToken}` }
+        });
         const result = await res.json();
 
         if (result.payload) {

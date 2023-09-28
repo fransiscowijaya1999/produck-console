@@ -6,6 +6,8 @@
 
     export let data;
 
+    const authHeader = { "Authorization": `Bearer ${data.authToken}` };
+
     let buttonState = "normal";
     let errorMessage = "";
     let successMessage = "";
@@ -20,7 +22,7 @@
 
             const res = await fetchServer(`users/${user.id}`, {
                 method: "PUT",
-                headers: { "Content-Type": "application/json" },
+                headers: { "Content-Type": "application/json", ...authHeader },
                 body: JSON.stringify(user)
             });
     
@@ -43,7 +45,8 @@
     async function deleteUser() {
         try {
             const res = await fetchServer(`users/${user.id}`, {
-                method: "DELETE"
+                method: "DELETE",
+                headers: authHeader
             });
     
             if (res.status != 204) {
@@ -62,7 +65,9 @@
     }
 
     async function refreshUser() {
-        const res = await fetchServer(`users/${user.id}`);
+        const res = await fetchServer(`users/${user.id}`, {
+            headers: authHeader
+        });
         const result = await res.json();
 
         user = result.payload;
@@ -84,7 +89,7 @@
         try {
             const res = await fetchServer("claims/assign", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: { "Content-Type": "application/json", ...authHeader },
                 body: JSON.stringify(claimAssignment)
             });
     
@@ -105,7 +110,7 @@
 </script>
 
 {#if showSelectClaimModal}
-    <SelectClaimModal on:handleClaimClick={handleClaimClick} on:handleModalClose={() => showSelectClaimModal = false} />
+    <SelectClaimModal authToken={data.authToken} on:handleClaimClick={handleClaimClick} on:handleModalClose={() => showSelectClaimModal = false} />
 {/if}
 <div class="container-fluid">
     <button class="btn btn-secondary mt-3" on:click={() => history.back()}>Back</button>

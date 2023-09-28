@@ -31,7 +31,9 @@
             }
         };
 
-        const res = await fetchServer(`orderitems/orders/${order.id}?keyword=${keyword}&page=${currentPage}&pageSize=20`);
+        const res = await fetchServer(`orderitems/orders/${order.id}?keyword=${keyword}&page=${currentPage}&pageSize=20`, {
+            headers: { "Authorization": `Bearer ${data.authToken}`}
+        });
         const result = await res.json();
 
         if (result.payload) {

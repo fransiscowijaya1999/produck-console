@@ -1,9 +1,10 @@
     
 <script>
-    import { goto } from "$app/navigation";
     import { fetchServer } from "$lib/fetch";
     
     import PosForm from "$lib/PosForm.svelte";
+
+    export let data;
 
     let buttonState = "normal";
     let errorMessage = "";
@@ -22,7 +23,7 @@
 
             const res = await fetchServer("pos", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: { "Content-Type": "application/json", "Authorization": `Bearer ${data.authToken}` },
                 body: JSON.stringify(pos)
             });
             

@@ -5,6 +5,10 @@
 
     import Pagination from "$lib/Pagination.svelte";
 
+    export let data;
+
+    const authHeader = { "Authorization": `Bearer ${data.authToken}` };
+
     let locationsSearchInputElement;
     /** @type {number | undefined} */
     let locationsSearchInputTimer;
@@ -26,7 +30,8 @@
         const { locationId } = event.detail;
         
         await fetchServer(`locations/${locationId}`, {
-            method: "DELETE"
+            method: "DELETE",
+            headers: authHeader
         });
 
         locationsPromise = (searchLocations)(locationsSearchInputValue, lastSelectedLocationId, locationsCurrentPage);
@@ -59,7 +64,9 @@
         if (parentLocationId) searchParams += `&parentId=${parentLocationId}`;
         if (!parentLocationId) searchParams += `&showOnlyRootChilds=true`;
 
-        const res = await fetchServer(`locations?keyword=${keyword}${searchParams}&page=${currentPage}`);
+        const res = await fetchServer(`locations?keyword=${keyword}${searchParams}&page=${currentPage}`, {
+            headers: authHeader
+        });
         const result = await res.json();
 
 
@@ -73,6 +80,7 @@
         return returnData;
     }
 </script>
+
 <div class="container-fluid p-3">
     <h1 class="mb-3">Inventory</h1>
     <div class="d-flex gap-2">

@@ -32,7 +32,7 @@
             }
             const res = await fetchServer(`locations/${location.id}`, {
                 method: "PUT",
-                headers: { "Content-Type": "application/json" },
+                headers: { "Content-Type": "application/json", "Authorization": `Bearer ${data.authToken}` },
                 body: JSON.stringify(body)
             });
 
@@ -53,7 +53,7 @@
 </script>
 
 {#if showSelectLocationModal}
-    <SelectLocationModal excludeId={data.payload.id} on:handleModalClose={() => showSelectLocationModal = false} on:handleLocationClick={handleLocationClick} />
+    <SelectLocationModal authToken={data.authToken} excludeId={data.payload.id} on:handleModalClose={() => showSelectLocationModal = false} on:handleLocationClick={handleLocationClick} />
 {/if}
 <div class="container-fluid">
     <button class="btn btn-secondary mt-3" on:click={() => history.back()}>Back</button>

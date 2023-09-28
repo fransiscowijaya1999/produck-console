@@ -5,6 +5,8 @@
     import SelectCategoryModal from "./SelectCategoryModal.svelte";
     import Pagination from "$lib/Pagination.svelte";
 
+    export let authToken = "";
+
     const dispatch = createEventDispatcher();
 
     let searchProductsTimer = 0;
@@ -32,7 +34,9 @@
         if (categoryId) searchParams += `&categoryId=${categoryId}`;
         if (excludedLocationId) searchParams += `&excludeFromLocationId=${excludedLocationId}`;
 
-        const res = await fetchServer(`products/?keyword=${keyword}${searchParams}&page=${currentPage}`);
+        const res = await fetchServer(`products/?keyword=${keyword}${searchParams}&page=${currentPage}`, {
+            headers: { "Authorization": `Bearer ${authToken}` }
+        });
         const result = await res.json();
 
         const returnData = {
@@ -68,6 +72,7 @@
 
 {#if showSelectCategoryModal}
     <SelectCategoryModal
+        {authToken}
         on:handleCategoryClick={handleCategoryClick}
     />
 {/if}

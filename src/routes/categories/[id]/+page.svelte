@@ -5,10 +5,6 @@
 
     export let data;
 
-    let categoryRaw = {
-        name: "",
-        parentCategory: null
-    }
     let category = data.payload;
 
     let showSelectCategoryModal = false;
@@ -36,7 +32,7 @@
             }
             const res = await fetchServer(`categories/${category.id}`, {
                 method: "PUT",
-                headers: { "Content-Type": "application/json" },
+                headers: { "Content-Type": "application/json", "Authorization": `Bearer ${data.authToken}` },
                 body: JSON.stringify(body)
             });
 
@@ -46,7 +42,6 @@
             }
 
             successMessage = "Category saved.";
-            category = Object.assign(categoryRaw);
             setTimeout(() => successMessage = "", 5000);
         } catch (/** @type {*} */ error) {
             errorMessage = error;
@@ -57,7 +52,7 @@
 </script>
 
 {#if showSelectCategoryModal}
-    <SelectCategoryModal excludeId={data.payload.id} on:handleCategoryClick={handleCategoryClick} />
+    <SelectCategoryModal authToken={data.authToken} excludeId={data.payload.id} on:handleCategoryClick={handleCategoryClick} />
 {/if}
 <div class="container-fluid">
     <button class="btn btn-secondary mt-3" on:click={() => history.back()}>Back</button>

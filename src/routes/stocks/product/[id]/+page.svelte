@@ -8,6 +8,8 @@
 
     export let data;
 
+    const authHeader = { "Authorization": `Bearer ${data.authToken}` };
+
     let successMessage = "";
     let errorMessage = "";
 
@@ -40,7 +42,9 @@
 
         const isRootLocationQuery = data.payload.isRootLocation ? `&isRootLocation=true` : "";
 
-        const res = await fetchServer(`stocklocation/product/${product.id}?keyword=${keyword}${isRootLocationQuery}&page=${currentPage}`);
+        const res = await fetchServer(`stocklocation/product/${product.id}?keyword=${keyword}${isRootLocationQuery}&page=${currentPage}`, {
+            headers: authHeader
+        });
         const result = await res.json();
 
         if (result.payload) {
@@ -55,7 +59,8 @@
         const { stockId } = event.detail;
 
         await fetchServer(`stocklocation/${stockId}`, {
-            method: "DELETE"
+            method: "DELETE",
+            headers: authHeader
         });
 
         stocksPromise = (searchStocks)(stocksSearchInputText, stocksCurrentPage);
@@ -66,7 +71,7 @@
 
         const res = await fetchServer(`stocklocation/${stock.id}`, {
             method: "PUT",
-            headers: { "Content-Type": "application/json" },
+            headers: { "Content-Type": "application/json", ...authHeader },
             body: JSON.stringify(stock)
         });
         
@@ -92,7 +97,7 @@
         try {
             const res = await fetchServer(`stocklocation`, {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: { "Content-Type": "application/json", ...authHeader },
                 body: JSON.stringify({
                     locationId: selectedLocation ? selectedLocation.id : null,
                     productId: product.id == 0 ? null : product.id,
@@ -120,6 +125,7 @@
 
 {#if showSelectLocationModal}
     <SelectLocationModal
+        authToken={data.authToken}
         on:handleModalClose={() => showSelectLocationModal = false}
         on:handleLocationClick={handleSelectLocationClick}
     />

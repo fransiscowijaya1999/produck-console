@@ -4,6 +4,10 @@
     import Pagination from "$lib/Pagination.svelte";
     import { fetchServer } from "$lib/fetch";
 
+    export let data;
+
+    const authHeader = { "Authorization": `Bearer ${data.authToken}`};
+
     /**
      * @type {any[]}
      */
@@ -29,7 +33,9 @@
         if (parentId) searchParams += `&parentId=${parentId}`;
         if (!parentId) searchParams += `&showOnlyRootChilds=true`;
 
-        const res = await fetchServer(`categories/?keyword=${keyword}${searchParams}&page=${currentPage}`);
+        const res = await fetchServer(`categories/?keyword=${keyword}${searchParams}&page=${currentPage}`, {
+            headers: authHeader
+        });
         const result = await res.json();
 
         const returnData = {
@@ -54,7 +60,8 @@
         const { categoryId } = event.detail;
         
         await fetchServer(`categories/${categoryId}`, {
-            method: "DELETE"
+            method: "DELETE",
+            headers: authHeader
         });
 
         categoriesPromise = (searchCategories)(searchCategoriesInput, lastSelectedCategory, categoriesCurrentPage);

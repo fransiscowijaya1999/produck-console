@@ -3,6 +3,8 @@
     import ProductForm from "$lib/ProductForm.svelte";
     import SelectCategoryModal from "$lib/modals/SelectCategoryModal.svelte";
 
+    export let data;
+
     const productRaw = {
         name: "",
         price: 0,
@@ -37,7 +39,7 @@
             product.categoryId = product.category ? product.category.id : null;
             const res = await fetchServer("products", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: { "Content-Type": "application/json", "Authorization": `Bearer ${data.authToken}` },
                 body: JSON.stringify(product)
             });
 
@@ -59,7 +61,7 @@
 </script>
 
 {#if showSelectCategoryModal}
-    <SelectCategoryModal on:handleCategoryClick={handleCategoryClick} />
+    <SelectCategoryModal authToken={data.authToken} on:handleCategoryClick={handleCategoryClick} />
 {/if}
 <div class="container-fluid">
     <button class="btn btn-secondary mt-3" on:click={() => history.back()}>Back</button>

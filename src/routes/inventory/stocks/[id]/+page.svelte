@@ -7,6 +7,8 @@
 
     export let data;
 
+    const authHeader = { "Authorization": `Bearer ${data.authToken}` };
+
     let successMessage = "";
     let errorMessage = "";
 
@@ -39,7 +41,10 @@
 
         const isRootLocationQuery = data.payload.isRootLocation ? `&isRootLocation=true` : "";
 
-        const res = await fetchServer(`stocklocation/location/${location.id}?keyword=${keyword}${isRootLocationQuery}&page=${currentPage}`);
+        const res = await fetchServer(`stocklocation/location/${location.id}?keyword=${keyword}${isRootLocationQuery}&page=${currentPage}`,
+        {
+            headers: authHeader
+        });
         const result = await res.json();
 
         if (result.payload) {
@@ -54,7 +59,8 @@
         const { stockId } = event.detail;
 
         await fetchServer(`stocklocation/${stockId}`, {
-            method: "DELETE"
+            method: "DELETE",
+            headers: authHeader
         });
 
         stocksPromise = (searchStocks)(stocksSearchInputText, stocksCurrentPage);
@@ -65,7 +71,7 @@
 
         const res = await fetchServer(`stocklocation/${stock.id}`, {
             method: "PUT",
-            headers: { "Content-Type": "application/json" },
+            headers: { "Content-Type": "application/json", ...authHeader },
             body: JSON.stringify(stock)
         });
         
@@ -91,7 +97,7 @@
         try {
             const res = await fetchServer(`stocklocation`, {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: { "Content-Type": "application/json", ...authHeader },
                 body: JSON.stringify({
                     locationId: location.id == 0 ? null : location.id,
                     productId: selectedProduct.id,
@@ -119,6 +125,7 @@
 
 {#if showSelectProductModal}
     <SelectProductModal
+        authToken={data.authToken}
         excludedLocationId={location.id}
         on:handleCloseModalClick={() => showSelectProductModal = false}
         on:handleProductClick={handleSelectProductClick}
