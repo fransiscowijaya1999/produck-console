@@ -16,7 +16,7 @@
         claims: []
     };
 
-    let user = Object.assign(userRaw);
+    let user = Object.assign({}, userRaw);
 
     let showSelectClaimModal = false;
 
@@ -36,6 +36,7 @@
                 if (result.isError) return errorMessage = result.responseException.exceptionMessage;
             }
 
+            user = Object.assign({}, userRaw);
             successMessage = "User saved";
         } catch (/** @type {*} */ error) {
             errorMessage = error;

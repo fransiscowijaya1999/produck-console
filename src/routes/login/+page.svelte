@@ -1,4 +1,6 @@
 <script>
+    import { goto } from "$app/navigation";
+
     let user = {
         username: "",
         password: ""
@@ -19,6 +21,7 @@
         const result = await res.json();
 
         if (result.type == "failure") errorMessage = result.data;
+        goto("/");
     }
 </script>
 
