@@ -17,8 +17,8 @@ export const actions = {
         });
 
         const result = await res.json();
-        const authToken = result.result;
         if (result.isError) return fail(400, result.responseException.exceptionMessage );
+        const authToken = result.result;
 
         cookies.set("auth_token", authToken, { path: "/" });
         throw redirect(303, "/");

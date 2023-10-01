@@ -20,7 +20,7 @@
 
         const result = await res.json();
 
-        if (result.type == "failure") errorMessage = result.data;
+        if (result.type == "failure") return errorMessage = result.data;
         goto("/");
     }
 </script>
