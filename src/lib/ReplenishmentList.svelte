@@ -18,7 +18,9 @@
         <tbody>
             {#each categories as category, i}
                 <tr>
-                    <th>{category.name}</th>
+                    <th>
+                        <a class="link-secondary link-underline-opacity-0" href={`/categories/${category.id}`}>{category.name}</a>
+                    </th>
                     <td>{toStringDelimit(category.minQty)}</td>
                     <td>
                         {toStringDelimit(category.totalStock)} 

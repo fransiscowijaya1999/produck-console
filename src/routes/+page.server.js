@@ -5,15 +5,10 @@ import { ssFetch } from '$lib/fetch';
 export async function load({ cookies, fetch }) {
     const authToken = cookies.get("auth_token");
 
-    const replenishmentRes = await ssFetch(fetch, "categories/replenishment", {
+    const res = await ssFetch(fetch, "dashboard", {
         headers: { "Authorization": `Bearer ${authToken}`}
     });
-    const { pagination: { count: replenishmentCount } } = await replenishmentRes.json();
+    const { payload: { replenishmentCount, productPriceCount, customerPriceCount } } = await res.json();
 
-    const priceCorrectionRes = await ssFetch(fetch, "products/negativeprice", {
-        headers: { "Authorization": `Bearer ${authToken}`}
-    });
-    const { pagination: { count: priceCorrectionCount } } = await priceCorrectionRes.json();
-
-	return { priceCorrectionCount, replenishmentCount, authToken };
+	return { productPriceCount, replenishmentCount, customerPriceCount, authToken };
 }

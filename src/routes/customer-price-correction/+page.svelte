@@ -1,9 +1,7 @@
 <script>
-    import { fetchServer } from "$lib/fetch.js";
-    import { displayMargin } from "$lib/marginCalculator";
-    import { toStringDelimit } from "$lib/numbering";
+    import { fetchServer } from '$lib/fetch.js';
 
-    import Pagination from "$lib/Pagination.svelte";
+    import Pagination from '$lib/Pagination.svelte';
 
     export let data;
 
@@ -14,7 +12,7 @@
     $: searchPromise = (search)(listCurrentPage)
 
     async function search(currentPage) {
-        const res = await fetchServer(`products/negativeprice?page=${currentPage}`, {
+        const res = await fetchServer(`products/negativecustomerprice?page=${currentPage}`, {
             headers: authHeader
         });
         const result = await res.json();
@@ -39,27 +37,21 @@
 </script>
 
 <div class="container-fluid p-3">
-    <h1 class="content-title mb-3">Price Correction</h1>
+    <h1 class="content-title mb-3">Customer Price Correction</h1>
     {#await searchPromise}
         <h3>Loading...</h3>
-    {:then { payload, pagination}} 
+    {:then { payload, pagination }} 
         {#if payload.length > 0}
             <table class="table table-hover">
                 <thead>
                     <tr>
                         <th>Name</th>
-                        <th>Price</th>
-                        <th>Cost</th>
-                        <th>Margin</th>
                     </tr>
                 </thead>
                 <tbody>
                     {#each payload as data, i}
                         <tr>
-                            <th><a href="/products/{data.id.toString()}">{data.name}</a></th>
-                            <th>{toStringDelimit(data.price)}</th>
-                            <th>{toStringDelimit(data.cost)}</th>
-                            <th>{@html displayMargin(data.price, data.cost)}</th>
+                            <th><a href="/prices/products/{data.id.toString()}">{data.name}</a></th>
                         </tr>
                     {/each}
                 </tbody>
