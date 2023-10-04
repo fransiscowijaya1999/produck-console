@@ -28,6 +28,7 @@
             const parentCategoryId = category.parentCategory ? category.parentCategory.id : null;
             const body = {
                 name: category.name,
+                minQty: category.minQty,
                 productCategoryId: parentCategoryId
             }
             const res = await fetchServer(`categories/${category.id}`, {
@@ -61,6 +62,7 @@
         <CategoryForm
             on:handleSelectCategoryClick={handleSelectCategoryClick}
             bind:name={category.name}
+            bind:minQty={category.minQty}
             bind:category={category.parentCategory} />
         <button on:click={saveCategory} class="btn btn-primary btn-lg mt-3" class:disabled={buttonState == "saving"} type="button">
             {#if buttonState == "normal"}

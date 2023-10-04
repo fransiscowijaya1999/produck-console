@@ -11,6 +11,7 @@
     let showSelectCategoryModal = false;
 
     let name = "";
+    let minQty = 0;
     /** @type {* | null} */
     let parentCategory = data ? data.payload : null;
 
@@ -30,6 +31,7 @@
             const parentCategoryId = parentCategory ? parentCategory.id : null;
             const category = {
                 name: name,
+                minQty: minQty,
                 productCategoryId: parentCategoryId
             }
             const res = await fetchServer("categories", {
@@ -44,6 +46,7 @@
 
             successMessage = "Category saved.";
             name = "";
+            minQty = 0;
             parentCategory = null;
             setTimeout(() => successMessage = "", 5000);
         } catch (/** @type {*} */ error) {
@@ -64,6 +67,7 @@
         <CategoryForm
             on:handleSelectCategoryClick={handleSelectCategoryClick}
             bind:name={name}
+            bind:minQty={minQty}
             bind:category={parentCategory} />
         <button on:click={saveCategory} class="btn btn-primary btn-lg mt-3" class:disabled={buttonState == "saving"} type="button">
             {#if buttonState == "normal"}

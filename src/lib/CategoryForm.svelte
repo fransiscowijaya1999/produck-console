@@ -2,6 +2,7 @@
     import { createEventDispatcher } from "svelte";
 
     export let name = "";
+    export let minQty = 0;
     /** @type {* | null}*/
     export let category = null;
 
@@ -19,6 +20,10 @@
 <div class="mb-3">
     <label for="category-name" class="form-label">Name</label>
     <input bind:value={name} type="text" id="category-name" class="form-control" required>
+</div>
+<div class="mb-3">
+    <label for="category-minqty" class="form-label">Minimum Stock</label>
+    <input bind:value={minQty} type="text" id="category-minqty" class="form-control" required>
 </div>
 <div class="mb-3">
     <label for="parent-category" class="form-label">Parent Category</label>

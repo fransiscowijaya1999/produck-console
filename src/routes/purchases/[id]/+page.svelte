@@ -95,6 +95,31 @@
             setTimeout(() => errorMessage = "", 5000);
         }
     }
+
+    async function updatePurchaseOrder(event) {
+        const payload = event.detail.purchaseOrder;
+        payload.productId = payload.product.id;
+        payload.purchaseId = purchase.id;
+
+        try {
+            const res = await fetchServer(`purchaseorders/${payload.id}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json", "Authorization": `Bearer ${data.authToken}` },
+                body: JSON.stringify(payload)
+            });
+            
+            if (res.status != 204) {
+                const result = await res.json();
+                if (result.isError) return errorMessage = result.responseException.exceptionMessage;
+            }
+
+            searchPromise = (search)(purchase.id, listCurrentPage);
+        } catch (/** @type {*} */ error) {
+            errorMessage = error;
+        } finally {
+            setTimeout(() => errorMessage = "", 5000);
+        }
+    }
 </script>
 
 {#if showVendorModal}
@@ -127,7 +152,7 @@
         <h3 class="mt-3 ms-3">Loading...</h3>
     {:then { payload, pagination }}
         <div class="mt-3 gap-3">
-            <PurchaseOrderList on:save={addPurchaseOrder} authToken={data.authToken} {payload} />
+            <PurchaseOrderList on:update={updatePurchaseOrder} on:save={addPurchaseOrder} authToken={data.authToken} {payload} />
             <Pagination
                 on:nextPage={() => listCurrentPage += 1}
                 on:prevPage={() => listCurrentPage -= 1}

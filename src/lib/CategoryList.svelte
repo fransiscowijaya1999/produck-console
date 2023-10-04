@@ -21,6 +21,7 @@
         <thead>
             <tr>
                 <th>Name</th>
+                <th>Min Stock</th>
                 <th>Products Count</th>
                 <th>Categories Count</th>
             </tr>
@@ -33,6 +34,7 @@
                         <button on:click={() => goto(`/categories/${category.id}`)} class="btn btn-sm btn-secondary me-1">edit</button>
                         <a href="/categories" on:click={() => selectCategory(category)}>{category.name}</a>
                     </th>
+                    <th>{toStringDelimit(category.minQty)}</th>
                     <th>{toStringDelimit(category.productsCount)}</th>
                     <th>{toStringDelimit(category.childCategoriesCount)}</th>
                 </tr>

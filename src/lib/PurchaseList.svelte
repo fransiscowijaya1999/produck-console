@@ -31,7 +31,7 @@
                     <td>{data.sourceDocument ?? ""}</td>
                     <td>{data.totalCost ? toStringDelimit(data.totalCost) : ""}</td>
                     <td class="specific-w-350">
-                        {#if data.memo.length > 0}
+                        {#if data.memo}
                             <div class="card text-bg-light">
                                 <div class="card-body p-2">
                                     <div class="card-text">

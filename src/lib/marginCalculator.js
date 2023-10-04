@@ -4,7 +4,7 @@
  */
 export function calculateMargin(price, cost) {
     const profit = price - cost;
-    const margin = (profit / price) * 100;
+    const margin = profit <= 0 ? (profit / cost) * 100 : (profit / price) * 100;
     const result = isNaN(margin) ? 0 : Math.floor(margin);
 
     return result;

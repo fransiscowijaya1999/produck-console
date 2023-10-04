@@ -51,6 +51,9 @@
     <li class:active={path == "/purchases"}>
       <a href="/purchases">Purchases</a>
     </li>
+    <li class:active={path == "/deliveries"}>
+      <a href="/deliveries">Deliveries</a>
+    </li>
     <li class:active={path == "/vendors"}>
       <a href="/vendors">Vendors</a>
     </li>
