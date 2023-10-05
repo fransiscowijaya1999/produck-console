@@ -99,7 +99,6 @@
     function save() {
         if (!newItem.purchaseOrder && !isBulk) { errorMessage = "Purchase Order is required."; return setTimeout(() => errorMessage = "", 5000); }
         if (!newItem.purchaseOrder) newItem.qty = 0;
-        console.log(newItem);
         dispatch("save", { deliveryOrder: Object.assign({}, newItem) });
 
         newItem = Object.assign({}, newItemRaw);
