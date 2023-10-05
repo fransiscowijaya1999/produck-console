@@ -11,5 +11,5 @@ export async function load({ cookies, fetch, params }) {
     });
     const data = await res.json();
 
-	return { ...data };
+	return { ...data, authToken };
 }

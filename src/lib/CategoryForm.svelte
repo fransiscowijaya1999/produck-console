@@ -23,7 +23,7 @@
 </div>
 <div class="mb-3">
     <label for="category-minqty" class="form-label">Minimum Stock</label>
-    <input bind:value={minQty} type="text" id="category-minqty" class="form-control" required>
+    <input bind:value={minQty} type="number" id="category-minqty" class="form-control" required>
 </div>
 <div class="mb-3">
     <label for="parent-category" class="form-label">Parent Category</label>
