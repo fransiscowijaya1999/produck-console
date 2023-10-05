@@ -63,6 +63,11 @@
         }
     }
 
+    function isBulkChange() {
+        newItem.purchaseOrder = null;
+        newItem.cost = null;
+    }
+
     function handleEditItemInputKeyup(event) {
         if (event.key == "Escape") editedItem = null;
     }
@@ -210,7 +215,7 @@
                 <td class="specific-w-150"><input bind:this={costInput} on:keyup={handleNewItemCostKeyup} type="number" id="cost" class="form-control" bind:value={newItem.cost} placeholder="Cost"></td>
                 <td class="specific-w-50">
                     <div class="form-switch">
-                        <input class="form-check-input" type="checkbox" role="switch" bind:checked={isBulk} id="is-bulk">
+                        <input class="form-check-input" type="checkbox" role="switch" on:change={isBulkChange} bind:checked={isBulk} id="is-bulk">
                     </div>
                 </td>
             </tr>
