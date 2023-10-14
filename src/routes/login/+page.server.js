@@ -20,7 +20,7 @@ export const actions = {
         if (result.isError) return fail(400, result.responseException.exceptionMessage );
         const authToken = result.result;
 
-        cookies.set("auth_token", authToken, { path: "/" });
+        cookies.set("auth_token", authToken, { secure: false, path: "/" });
         throw redirect(303, "/");
 	}
 };
