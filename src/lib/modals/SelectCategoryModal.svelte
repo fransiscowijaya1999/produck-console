@@ -15,6 +15,8 @@
     let categorySearchTimer;
     /** @type {string} */
     let categorySearchInputValue = "";
+    /** @type {any} */
+    let categorySearchInput;
     let categoriesCurrentPage = 1;
 
     $: lastSelectedCategoriesId = selectedCategories.length > 0 ? selectedCategories[selectedCategories.length - 1].id : null;
@@ -23,6 +25,14 @@
     function handleBreadcrumbClick(index) {
         selectedCategories.splice(index + 1, selectedCategories.length - (index + 1));
         selectedCategories = selectedCategories;
+        categorySearchInput.value = "";
+        categorySearchInputValue = "";
+    }
+
+    function handleBreadcrumbClickRoot() {
+        selectedCategories = [];
+        categorySearchInput.value = "";
+        categorySearchInputValue = "";
     }
 
     /** @param {*} event */
@@ -37,6 +47,13 @@
     /** @param {*} category */
     function handleCategoryClick(category) {
         dispatch("handleCategoryClick", { category });
+    }
+
+    /** @param {*} category */
+    function handleStepIn(category) {
+        selectedCategories = [...selectedCategories, category];
+        categorySearchInput.value = "";
+        categorySearchInputValue = "";
     }
 
     async function searchCategories(keyword = "", parentId = null, currentPage = 1, excludeId = null) {
@@ -85,7 +102,7 @@
                             {#if selectedCategories.length == 0}
                                 root
                             {:else}
-                                <a href="#top" on:click={() => selectedCategories = []}>root</a>
+                                <a href="#top" on:click={handleBreadcrumbClickRoot}>root</a>
                             {/if}
                         </li>
                         {#each selectedCategories as selectedCategory, i}
@@ -97,7 +114,7 @@
                         {/each}
                     </ol>
                 </nav>
-                <input on:keyup={searchCategoriesDebounce} type="text" id="category-search" class="form-control">
+                <input bind:this={categorySearchInput} on:keyup={searchCategoriesDebounce} type="text" id="category-search" class="form-control">
                 {#await categoriesPromise}
                     <p>Loading...</p>
                 {:then { categories, pagination }}
@@ -105,7 +122,7 @@
                         <div class="list-group mt-3 mb-2">
                             {#each categories as category}
                                 <a href="#top" class="list-group-item list-group-item-action">
-                                    <button on:click={() => selectedCategories = [...selectedCategories, category]} class="btn btn-sm btn-secondary">Step In</button>
+                                    <button on:click={() => handleStepIn(category)} class="btn btn-sm btn-secondary">Step In</button>
                                     <button on:click={() => handleCategoryClick(category)} class="btn btn-sm btn-outline-primary">Select</button>
                                     <span class="ms-2">{category.name}</span>
                                 </a>

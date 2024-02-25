@@ -23,6 +23,10 @@
         dispatch("handleSelectCategoryClick");
     }
 
+    function handleNameKeyup() {
+        dispatch("handleNameKeyup");
+    }
+
     /** @param {InputEvent} e*/
     function priceBlurHandler(e) {
         if (!e.currentTarget) return;
@@ -50,27 +54,29 @@
     }
 </script>
 
-<div class="mb-3">
-    <label for="product-name" class="form-label">Name</label>
-    <input bind:value={name} type="text" id="product-name" class="form-control" required>
-</div>
-<div class="mb-3">
-    <label for="product-price" class="form-label">Price {@html displayMargin(price, cost)}</label>
-    <input on:blur={priceBlurHandler} value={priceFormatted} type="text" id="product-price" class="form-control">
-</div>
-<div class="mb-3">
-    <label for="product-cost" class="form-label">Cost</label>
-    <input on:blur={costBlurHandler} value={costFormatted} type="text" id="product-cost" class="form-control">
-</div>
-<div class="mb-3">
-    <label for="product-barcode" class="form-label">Barcode</label>
-    <input bind:value={barcode} type="text" id="product-barcode" class="form-control">
-</div>
-<div class="mb-3">
-    <label for="product-category" class="form-label">Category</label>
-    <div class="input-group">
-        <button on:click={handleSelectCategoryClick} class="btn btn-secondary">Select Category</button>
-        <input value={category ? category.name : ""} type="text" id="product-category" readonly class="form-control">
-        <button on:click={handleResetCategoryClick} class="btn btn-danger">Reset</button>
+<div>
+    <div class="mb-3">
+        <label for="product-name" class="form-label">Name</label>
+        <input autocomplete="off" bind:value={name} type="text" id="product-name" class="form-control" required>
+    </div>
+    <div class="mb-3">
+        <label for="product-price" class="form-label">Price {@html displayMargin(price, cost)}</label>
+        <input autocomplete="off" on:blur={priceBlurHandler} value={priceFormatted} type="text" id="product-price" class="form-control">
+    </div>
+    <div class="mb-3">
+        <label for="product-cost" class="form-label">Cost</label>
+        <input autocomplete="off" on:blur={costBlurHandler} value={costFormatted} type="text" id="product-cost" class="form-control">
+    </div>
+    <div class="mb-3">
+        <label for="product-barcode" class="form-label">Barcode</label>
+        <input autocomplete="off" bind:value={barcode} type="text" id="product-barcode" class="form-control">
+    </div>
+    <div class="mb-3">
+        <label for="product-category" class="form-label">Category</label>
+        <div class="input-group">
+            <button on:click={handleSelectCategoryClick} class="btn btn-secondary">Select Category</button>
+            <input value={category ? category.name : ""} type="text" id="product-category" readonly class="form-control">
+            <button on:click={handleResetCategoryClick} class="btn btn-danger">Reset</button>
+        </div>
     </div>
 </div>

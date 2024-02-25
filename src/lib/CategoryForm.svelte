@@ -19,7 +19,7 @@
 
 <div class="mb-3">
     <label for="category-name" class="form-label">Name</label>
-    <input bind:value={name} type="text" id="category-name" class="form-control" required>
+    <input bind:value={name} type="text" id="category-name" class="form-control" autocomplete="off" required>
 </div>
 <div class="mb-3">
     <label for="category-minqty" class="form-label">Minimum Stock</label>

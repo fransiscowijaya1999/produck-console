@@ -21,6 +21,37 @@
     let buttonState = "normal";
     let product = Object.assign({}, productRaw);
 
+    $: productsPromise = (searchProducts)(product.name);
+
+    async function searchProducts(keyword = "", categoryId = null, currentPage = 1) {
+        let searchParams = "";
+
+        if (categoryId) searchParams += `&categoryId=${categoryId}`;
+
+        const res = await fetchServer(`products/?keyword=${keyword}${searchParams}&page=${currentPage}`, {
+            headers: {
+                "Authorization": `Bearer ${data.authToken}`
+            }
+        });
+        const result = await res.json();
+
+        const returnData = {
+            products: [],
+            pagination: {
+                totalPages: 1,
+                page: 1,
+                pageSize: 10
+            }
+        };
+
+        if (result.payload) {
+            returnData.products = result.payload;
+            returnData.pagination = result.pagination;
+        }
+
+        return returnData;
+    }
+
     function handleSelectCategoryClick() {
         showSelectCategoryModal = !showSelectCategoryModal;
     }
@@ -64,25 +95,57 @@
     <SelectCategoryModal authToken={data.authToken} on:handleCategoryClick={handleCategoryClick} />
 {/if}
 <div class="container-fluid">
-    <button class="btn btn-secondary mt-3" on:click={() => history.back()}>Back</button>
-    <h1>New Product</h1>
-    <div class="form-wrapper specific-w-350">
-        <ProductForm on:handleSelectCategoryClick={handleSelectCategoryClick} bind:category={product.category} bind:name={product.name} bind:price={product.price} bind:cost={product.cost} bind:barcode={product.barcode} />
-        <button on:click={saveProduct} class="btn btn-primary btn-lg mt-3" class:disabled={buttonState == "saving"} type="button">
-            {#if buttonState == "normal"}
-                Save
-            {:else if buttonState == "saving"}
-                Saving...
+    <div class="row g-3">
+        <div class="col-1"></div>
+        <div class="col-4">
+            <button class="btn btn-secondary mt-3" on:click={() => history.back()}>Back</button>
+            <h1>New Product</h1>
+            <div class="form-wrapper specific-w-350">
+                <ProductForm
+                    on:handleSelectCategoryClick={handleSelectCategoryClick}
+                    bind:category={product.category}
+                    bind:name={product.name}
+                    bind:price={product.price}
+                    bind:cost={product.cost}
+                    bind:barcode={product.barcode}
+                />
+                <button on:click={saveProduct} class="btn btn-primary btn-lg mt-3" class:disabled={buttonState == "saving"} type="button">
+                    {#if buttonState == "normal"}
+                        Save
+                    {:else if buttonState == "saving"}
+                        Saving...
+                    {/if}
+                </button>
+                {#if errorMessage}
+                    <div class="alert alert-danger mt-3">
+                        {errorMessage}
+                    </div>
+                {:else if successMessage}
+                    <div class="alert alert-success mt-3">
+                        {successMessage}
+                    </div>
+                {/if}
+            </div>
+        </div>
+        <div class="col">
+            {#if product.name.length < 1}
+                <h3 class="text-secondary text-center mt-5">Type product name</h3>
+            {:else}
+                {#await productsPromise}
+                    <h3 class="text-secondary text-center mt-5">Searching...</h3>
+                {:then {products}} 
+                    {#if products.length < 1}
+                        <h3 class="text-secondary text-center mt-5">No possible duplicate</h3>
+                    {:else}
+                        <h3 class="text-secondary text-center mt-5">Possible duplicate</h3>
+                        <ul class="list-group">
+                            {#each products as product}
+                                <li class="list-group-item">{product.name}</li>
+                            {/each}
+                        </ul>
+                    {/if}
+                {/await}
             {/if}
-        </button>
-        {#if errorMessage}
-            <div class="alert alert-danger mt-3">
-                {errorMessage}
-            </div>
-        {:else if successMessage}
-            <div class="alert alert-success mt-3">
-                {successMessage}
-            </div>
-        {/if}
+        </div>
     </div>
 </div>
