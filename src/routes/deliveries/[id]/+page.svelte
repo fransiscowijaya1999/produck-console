@@ -171,6 +171,58 @@
             setTimeout(() => errorMessage = "", 5000);
         }
     }
+
+    async function selectAllBulk(event) {
+        const { purchaseId } = event.detail;
+
+        try {
+            const res = await fetchServer(`landedcostitems/bulk`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json", "Authorization": `Bearer ${data.authToken}` },
+                body: JSON.stringify({
+                    purchaseId,
+                    landedCostId: delivery.id
+                })
+            });
+            
+            if (res.status != 204) {
+                const result = await res.json();
+                if (result.isError) return errorMessage = result.responseException.exceptionMessage;
+            }
+
+            searchPromise = (search)(keyword, delivery.id, listCurrentPage);
+        } catch (/** @type {*} */ error) {
+            errorMessage = error;
+        } finally {
+            setTimeout(() => errorMessage = "", 5000);
+        }
+    }
+
+    async function selectAllSeparated(event) {
+        const { purchaseId } = event.detail;
+
+        try {
+            const res = await fetchServer(`landedcostitems/separated`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json", "Authorization": `Bearer ${data.authToken}` },
+                body: JSON.stringify({
+                    purchaseId,
+                    landedCostId: delivery.id
+                })
+            });
+            
+            if (res.status != 204) {
+                const result = await res.json();
+                if (result.isError) return errorMessage = result.responseException.exceptionMessage;
+            }
+
+            searchPromise = (search)(keyword, delivery.id, listCurrentPage);
+        } catch (/** @type {*} */ error) {
+            errorMessage = error;
+        } finally {
+            setTimeout(() => errorMessage = "", 5000);
+        }
+    }
 </script>
 
 {#if showSourceLocationModal}<SelectLocationModal on:handleLocationClick={event => {delivery.sourceLocation = event.detail.location; showSourceLocationModal = false;}} on:handleModalClose={() => showSourceLocationModal = false} authToken={data.authToken} />{/if}
@@ -221,7 +273,13 @@
         <h3 class="mt-3 ms-3">Loading...</h3>
     {:then { payload, pagination }} 
         <div class="mt-3 gap-3">
-            <DeliveryOrderList on:delete={deleteDeliveryOrder} on:update={updateDeliveryOrder} on:save={addDeliveryOrder} authToken={data.authToken} {payload} />
+            <DeliveryOrderList
+                on:delete={deleteDeliveryOrder}
+                on:update={updateDeliveryOrder}
+                on:save={addDeliveryOrder}
+                on:selectAllBulk={selectAllBulk}
+                on:selectAllSeparated={selectAllSeparated}
+                authToken={data.authToken} {payload} />
             <Pagination
                 on:nextPage={() => listCurrentPage += 1}
                 on:prevPage={() => listCurrentPage -= 1}

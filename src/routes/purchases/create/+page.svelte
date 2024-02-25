@@ -41,7 +41,19 @@
             }
 
             successMessage = "Purchase saved";
-            goto("/purchases");
+
+            const inserted = await fetchServer(`purchases?pageSize=1`, {
+                headers: { "Authorization": `Bearer ${data.authToken}`}
+            });
+
+            const result = await inserted.json();
+
+            if (result.payload) {
+                const { id: insertedId } = result.payload[0];
+    
+                if (insertedId) goto(`/purchases/${insertedId}`)
+            }
+            else goto("/purchases");
         } catch (/** @type {*} */ error) {
             errorMessage = error;
         } finally {

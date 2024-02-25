@@ -25,16 +25,27 @@
         }, 500);
     }
 
+    /** @type {* | null} */
+    let purchase = null;
+    let showSelectPurchaseModal = false;
+
+    $: searchPromise = (search)(purchase ? purchase.id : null, listCurrentPage);
+
     /** @param {*} item */
     function handleItemClick(item) {
         dispatch("handleItemClick", { item });
         dispatch("handleModalClose");
     }
 
-    let purchase = null;
-    let showSelectPurchaseModal = false;
+    function handleSelectAllBulk() {
+        if (purchase) dispatch("selectAllBulk", { purchaseId: purchase.id });
+        dispatch("handleModalClose");
+    }
 
-    $: searchPromise = (search)(purchase ? purchase.id : null, listCurrentPage);
+    function handleSelectAllSeparated() {
+        if (purchase) dispatch("selectAllSeparated", { purchaseId: purchase.id });
+        dispatch("handleModalClose");
+    }
 
     async function search(purchaseId = purchase.id, currentPage = 1) {
         const returnData = {
@@ -66,14 +77,24 @@
 {#if showSelectPurchaseModal}<SelectPurchaseModal on:handleItemClick={(event) => purchase = event.detail.item} on:handleModalClose={() => showSelectPurchaseModal = false} {authToken} />{/if}
 
 <div class="modal" style="z-index: 999;">
-    <div class="modal-dialog" style="max-width: 90vw; width: 90vw;">
+    <div class="modal-dialog" style="max-width: 90vw; width: 90vw; max-height: 75vh;">
         <div class="modal-content">
             <div class="modal-header">
                 <h1 class="modal-title fs-5">Select Purchase Order</h1>
                 <button on:click={() => dispatch("handleModalClose")} type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <button on:click={() => showSelectPurchaseModal = true} type="button" class="btn btn-secondary d-block w-100">{"Select Purchase"}</button>
+                <div class="row">
+                    <div class="col">
+                        <button on:click={() => showSelectPurchaseModal = true} type="button" class="btn btn-secondary d-block w-100">{"Select Purchase"}</button>
+                    </div>
+                    <div class="col-auto">
+                        <div class="btn-group">
+                            <button on:click={handleSelectAllBulk} type="button" class="btn btn-primary" disabled={purchase === null}>Select All Bulk</button>
+                            <button on:click={handleSelectAllSeparated} type="button" class="btn btn-primary" disabled={purchase === null}>Select All Separated</button>
+                        </div>
+                    </div>
+                </div>
                 <!-- <input on:keyup={keywordDebounce} type="text" id="keyword-search" class="form-control"> -->
                 {#await searchPromise}
                     <h3>Loading...</h3>

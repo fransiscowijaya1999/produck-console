@@ -67,7 +67,7 @@
 </script>
 
 <div class="modal" style="z-index: 9999;">
-    <div class="modal-dialog" style="max-width: 90vw; width: 90vw;">
+    <div class="modal-dialog" style="max-width: 90vw; width: 90vw; max-height: 75vh;">
         <div class="modal-content">
             <div class="modal-header">
                 <h1 class="modal-title fs-5">Select Purchase</h1>

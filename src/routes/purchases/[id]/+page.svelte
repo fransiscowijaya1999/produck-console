@@ -1,6 +1,8 @@
 <script>
+    import { goto } from "$app/navigation";
     import { fetchServer } from "$lib/fetch";
     import SelectVendorModal from "$lib/modals/SelectVendorModal.svelte";
+    import { toStringDelimit } from "$lib/numbering.js";
     import Pagination from "$lib/Pagination.svelte";
     
     import PurchaseForm from "$lib/PurchaseForm.svelte";
@@ -14,9 +16,12 @@
     let showVendorModal = false;
     let listCurrentPage = 1;
 
+    let tax = 0;
+    let discount = 0;
+
     let purchase = data.payload;
 
-    $: searchPromise = (search)(purchase.id, listCurrentPage);
+    $: searchPromise = (search)(data.payload.id, listCurrentPage);
 
     async function search(purchaseId = purchase.id, currentPage = 1) {
         const returnData = {
@@ -61,6 +66,25 @@
             }
 
             successMessage = "Purchase saved";
+        } catch (/** @type {*} */ error) {
+            errorMessage = error;
+        } finally {
+            buttonState = "normal";
+            setTimeout(() => successMessage = "", 5000);
+            setTimeout(() => errorMessage = "", 5000);
+        }
+    }
+
+    async function deletePurchase() {
+        try {
+            buttonState = "saving";
+
+            await fetchServer(`purchases/${purchase.id}`, {
+                method: "DELETE",
+                headers: { "Authorization": `Bearer ${data.authToken}` }
+            });
+
+            goto("/purchases")
         } catch (/** @type {*} */ error) {
             errorMessage = error;
         } finally {
@@ -135,7 +159,14 @@
             {#if buttonState == "normal"}
                 Save
             {:else if buttonState == "saving"}
-                Saving...
+                Loading...
+            {/if}
+        </button>
+        <button on:click={deletePurchase} class="btn btn-danger btn-lg" class:disabled={buttonState == "saving"} type="button">
+            {#if buttonState == "normal"}
+                Delete
+            {:else if buttonState == "saving"}
+                Loading...
             {/if}
         </button>
         {#if errorMessage}
@@ -152,13 +183,43 @@
         <h3 class="mt-3 ms-3">Loading...</h3>
     {:then { payload, pagination }}
         <div class="mt-3 gap-3">
-            <PurchaseOrderList on:update={updatePurchaseOrder} on:save={addPurchaseOrder} authToken={data.authToken} {payload} />
+            <div class="row mb-3">
+                <div class="col"></div>
+                <div class="col-auto">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-auto">
+                                    <label for="tax" class="form-label">Tax (%)</label>
+                                    <input bind:value={tax} id="tax" type="number" class="form-control">
+                                </div>
+                                <div class="col-auto">
+                                    <label for="discount" class="form-label">Discount (%)</label>
+                                    <input bind:value={discount} id="discount" type="number" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col"></div>
+            </div>
+            <PurchaseOrderList bind:tax={tax} bind:discount={discount} on:update={updatePurchaseOrder} on:save={addPurchaseOrder} authToken={data.authToken} {payload} />
             <Pagination
                 on:nextPage={() => listCurrentPage += 1}
                 on:prevPage={() => listCurrentPage -= 1}
                 totalPages={pagination.totalPages}
                 currentPage={pagination.page}
             />
+            <div class="card m-5">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col"></div>
+                        <div class="col-auto">
+                            Total: <span class="fw-bold">{toStringDelimit(payload.reduce((acc, cur) => acc + (cur.cost * cur.quantity), 0))}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     {/await}
 </div>

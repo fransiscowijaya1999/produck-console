@@ -117,7 +117,13 @@
     }
 </script>
 
-{#if showSelectPurchaseOrderModal}<SelectPurchaseOrderModal on:handleItemClick={event => newItem.purchaseOrder = event.detail.item} {authToken} on:handleModalClose={() => showSelectPurchaseOrderModal = false} />{/if}
+{#if showSelectPurchaseOrderModal}<SelectPurchaseOrderModal
+    on:handleItemClick={event => newItem.purchaseOrder = event.detail.item} {authToken}
+    on:handleModalClose={() => showSelectPurchaseOrderModal = false}
+    on:selectAllBulk={(event) => dispatch("selectAllBulk", { purchaseId: event.detail.purchaseId })}
+    on:selectAllSeparated={(event) => dispatch("selectAllSeparated", { purchaseId: event.detail.purchaseId })}
+    />
+{/if}
 
 <table class="table table-hover">
     <thead>
