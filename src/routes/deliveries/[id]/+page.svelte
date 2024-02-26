@@ -176,7 +176,7 @@
         const { purchaseId } = event.detail;
 
         try {
-            const res = await fetchServer(`landedcostitems/bulk`, {
+            const res = await fetchServer(`landedcostitems/bulk?ignoreDelivered=${delivery.isPurchase ? "false" : "true"}`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json", "Authorization": `Bearer ${data.authToken}` },
                 body: JSON.stringify({
@@ -202,7 +202,7 @@
         const { purchaseId } = event.detail;
 
         try {
-            const res = await fetchServer(`landedcostitems/separated`, {
+            const res = await fetchServer(`landedcostitems/separated?ignoreDelivered=${delivery.isPurchase ? "false" : "true"}`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json", "Authorization": `Bearer ${data.authToken}` },
                 body: JSON.stringify({
