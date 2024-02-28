@@ -122,8 +122,15 @@
 
 <div class="container-fluid p-3">
     <h1 class="content-title mb-3">Products</h1>
-    <div class="d-flex gap-2">
-        <button class="btn btn-primary btn-lg" on:click={() => goto("/products/create")}>Create</button>
+    <div class="row d-flex g-2">
+        <div class="col-auto">
+            <button class="btn btn-primary btn-lg" on:click={() => goto("/products/create")}>Create</button>
+        </div>
+        <div class="col-auto">
+            <button on:click={() => goto("/barcode")} type="button" class="btn btn-secondary btn-lg">
+                Barcode
+            </button>
+        </div>
     </div>
     <nav class="mt-3" aria-label="Product Category Breadcrumb">
         <ol class="breadcrumb">
