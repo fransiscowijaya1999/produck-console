@@ -118,6 +118,24 @@
         selectedCategories = selectedCategories;
     }
 
+    async function exportCSV() {
+        let searchParams = "";
+
+        if (lastSelectedCategoryId) searchParams += `&categoryId=${lastSelectedCategoryId}`;
+
+        const res = await fetchServer(`products/csv?keyword=${searchProductsInput}${searchParams}&page=${productsCurrentPage}`, {
+            headers: {
+                "Authorization": `Bearer ${data.authToken}`
+            }
+        });
+        const { result } = await res.json();
+
+        const blob = new Blob([result], { type: "text/csv;charset=utf-8"});
+        const objUrl = URL.createObjectURL(blob);
+
+        window.open(objUrl, "_blank");
+    }
+
 </script>
 
 <div class="container-fluid p-3">
@@ -130,6 +148,9 @@
             <button on:click={() => goto("/barcode")} type="button" class="btn btn-secondary btn-lg">
                 Barcode
             </button>
+        </div>
+        <div class="col-auto">
+            <button on:click={exportCSV} type="button" class="btn btn-secondary btn-lg">Download CSV</button>
         </div>
     </div>
     <nav class="mt-3" aria-label="Product Category Breadcrumb">
