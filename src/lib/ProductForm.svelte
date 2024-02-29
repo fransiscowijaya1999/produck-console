@@ -65,7 +65,7 @@
     </div>
     <div class="mb-3">
         <label for="product-cost" class="form-label">Cost</label>
-        <input autocomplete="off" on:blur={costBlurHandler} value={costFormatted} type="text" id="product-cost" class="form-control">
+        <input autocomplete="off" bind:value={cost} type="number" id="product-cost" class="form-control">
     </div>
     <div class="mb-3">
         <label for="product-barcode" class="form-label">Barcode</label>
