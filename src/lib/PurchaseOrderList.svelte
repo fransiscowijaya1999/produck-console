@@ -23,6 +23,7 @@
 
     /** @type {* | null} */
     let editedItem = null;
+    let editedItemBefore = null;
     let showProductSelection = false;
     let productSelectionList = [];
     let productSelectionSelected = 0;
@@ -117,6 +118,7 @@
         searchKeyword = event.target.value;
     }
     function handleItemClick(index) {
+        editedItemBefore = Object.assign({}, payload[index]);
         editedItem = index;
     }
     function handleEditItemProductBlur(event, data) {
@@ -132,11 +134,15 @@
         if (event.key == "Enter") {
             update();
         }
+        
+        if (event.key == "Escape") cancelEdit();
     }
     function handleEditItemQtyKeyup(event) {
         if (event.key == "Enter") {
             costInput.focus();
         }
+        
+        if (event.key == "Escape") cancelEdit();
     }
 
     function selectProduct(product) {
@@ -181,9 +187,23 @@
         resetForm();
     }
 
+    /**
+     * @param {number} id
+     */
+    function deletePurchaseOrder(id) {
+        dispatch("deletePurchaseOrder", { id });
+    }
+
     function resetForm() {
         searchKeyword = "";
-        if (editedItem) editedItem = null;
+        if (editedItem !== null ) editedItem = null;
+    }
+
+    function cancelEdit() {
+        if (payload[editedItem]) payload[editedItem] = Object.assign({}, editedItemBefore);
+
+        resetForm();
+        editedItemBefore = null;
     }
 </script>
 
@@ -196,11 +216,12 @@
             <th>Qty / Delivered</th>
             <th>Cost</th>
             <th>Amount</th>
+            <th>Actions</th>
         </tr>
     </thead>
     <tbody>
         {#each payload as data, i}
-            {#if editedItem == i}
+            {#if editedItem === i}
                 <tr>
                     <th>{i + 1}. </th>
                     <td>
@@ -227,7 +248,7 @@
                     </td>
                     <td><input autocomplete="off" type="text" id="description" class="form-control" bind:value={data.description} placeholder="Description"></td>
                     <td class="specific-w-150"><input autocomplete="off" bind:this={qtyInput} on:keyup={handleEditItemQtyKeyup} type="number" id="qty" class="form-control" bind:value={data.quantity} placeholder="Qty"></td>
-                    <td colspan="2">
+                    <td colspan="4">
                         <div class="row">
                             <div class="col">
                                 <input autocomplete="off" bind:this={costInput} on:keyup={handleEditItemCostKeyup} type="number" id="cost" class="form-control" bind:value={data.cost} placeholder="Cost">
@@ -239,11 +260,11 @@
                     </td>
                 </tr>
             {:else}
-                <tr on:click={() => handleItemClick(i)}>
-                    <th>{i + 1}. </th>
-                    <td>{data.product.name}</td>
-                    <td>{data.description ?? ""}</td>
-                    <td>
+                <tr>
+                    <th on:click={() => handleItemClick(i)}>{i + 1}. </th>
+                    <td on:click={() => handleItemClick(i)}>{data.product.name}</td>
+                    <td on:click={() => handleItemClick(i)}>{data.description ?? ""}</td>
+                    <td on:click={() => handleItemClick(i)}>
                         <strong>{toStringDelimit(data.quantity)}</strong>
                         /
                         {#if data.delivered >= data.quantity}
@@ -252,8 +273,16 @@
                             <span class="badge text-bg-warning">{toStringDelimit(data.delivered)}</span>
                         {/if}
                     </td>
-                    <td>{toStringDelimit(data.cost)}</td>
-                    <td>{toStringDelimit(data.cost * data.quantity)}</td>
+                    <td on:click={() => handleItemClick(i)}>{toStringDelimit(data.cost)}</td>
+                    <td on:click={() => handleItemClick(i)}>{toStringDelimit(data.cost * data.quantity)}</td>
+                    <td>
+                        <div class="row">
+                            <div class="col"></div>
+                            <div class="col-auto">
+                                <button on:click={() => deletePurchaseOrder(data.id)} type="button" class="btn btn-sm btn-danger">delete</button>
+                            </div>
+                        </div>
+                    </td>
                 </tr>
             {/if}
         {/each}
@@ -284,7 +313,7 @@
                 </td>
                 <td><input autocomplete="off" type="text" id="description" class="form-control" bind:value={newItem.description} placeholder="Description"></td>
                 <td class="specific-w-150"><input bind:this={qtyInput} on:keyup={handleNewItemQtyKeyup} type="number" id="qty" class="form-control" bind:value={newItem.qty} placeholder="Qty"></td>
-                <td colspan="2">
+                <td colspan="3">
                     <div class="row">
                         <div class="col">
                             <input bind:this={costInput} on:keyup={handleNewItemCostKeyup} type="number" id="cost" class="form-control" bind:value={newItem.cost} placeholder="Cost">
@@ -297,7 +326,7 @@
             </tr>
             {#if errorMessage}
                 <tr>
-                    <td colspan="4">
+                    <td colspan="7">
                         <div class="alert alert-danger">{errorMessage}</div>
                     </td>
                 </tr>

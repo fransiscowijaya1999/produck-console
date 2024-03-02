@@ -144,6 +144,28 @@
             setTimeout(() => errorMessage = "", 5000);
         }
     }
+
+    async function deletePurchaseOrder(event) {
+        const { id } = event.detail;
+
+        try {
+            const res = await fetchServer(`purchaseorders/${id}`, {
+                method: "DELETE",
+                headers: { "Authorization": `Bearer ${data.authToken}` }
+            });
+            
+            if (res.status != 204) {
+                const result = await res.json();
+                if (result.isError) return errorMessage = result.responseException.exceptionMessage;
+            }
+
+            searchPromise = (search)(purchase.id, listCurrentPage);
+        } catch (/** @type {*} */ error) {
+            errorMessage = error;
+        } finally {
+            setTimeout(() => errorMessage = "", 5000);
+        }
+    }
 </script>
 
 {#if showVendorModal}
@@ -203,7 +225,13 @@
                 </div>
                 <div class="col"></div>
             </div>
-            <PurchaseOrderList bind:tax={tax} bind:discount={discount} on:update={updatePurchaseOrder} on:save={addPurchaseOrder} authToken={data.authToken} {payload} />
+            <PurchaseOrderList
+                bind:tax={tax}
+                bind:discount={discount}
+                on:update={updatePurchaseOrder}
+                on:save={addPurchaseOrder}
+                on:deletePurchaseOrder={deletePurchaseOrder}
+                authToken={data.authToken} {payload} />
             <Pagination
                 on:nextPage={() => listCurrentPage += 1}
                 on:prevPage={() => listCurrentPage -= 1}
