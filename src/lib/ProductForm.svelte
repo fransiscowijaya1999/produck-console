@@ -30,7 +30,8 @@
     /** @param {InputEvent} e*/
     function priceBlurHandler(e) {
         if (!e.currentTarget) return;
-        const tempValue = parseInt(e.currentTarget.value.replace(/\D/g,''));
+        // const tempValue = parseInt(e.currentTarget.value.replace(/\D/g,''));
+        const tempValue = parseFloat(e.currentTarget.value);
 
         if (isNaN(tempValue)) {
             price = 0;
@@ -43,7 +44,8 @@
     /** @param {InputEvent} e*/
     function costBlurHandler(e) {
         if (!e.currentTarget) return;
-        const tempValue = parseInt((e.currentTarget).value.replace(/\D/g,''));
+        // const tempValue = parseInt((e.currentTarget).value.replace(/\D/g,''));
+        const tempValue = parseInt((e.currentTarget).value);
 
         if (isNaN(tempValue)) {
             cost = 0;
@@ -61,7 +63,7 @@
     </div>
     <div class="mb-3">
         <label for="product-price" class="form-label">Price {@html displayMargin(price, cost)}</label>
-        <input autocomplete="off" on:blur={priceBlurHandler} value={priceFormatted} type="text" id="product-price" class="form-control">
+        <input autocomplete="off" on:blur={priceBlurHandler} type="number" id="product-price" class="form-control">
     </div>
     <div class="mb-3">
         <label for="product-cost" class="form-label">Cost</label>
