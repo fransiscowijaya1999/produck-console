@@ -200,7 +200,7 @@
                                 <td>{toStringDelimit(child.qty)}</td>
                                 <td></td>
                                 <td>
-                                    <button type="button" class="btn btn-danger btn-sm" on:click={dispatch("delete", { id: payload[i].id })}>delete</button>
+                                    <button type="button" class="btn btn-danger btn-sm" on:click={dispatch("delete", { id: child.id })}>delete</button>
                                 </td>
                             </tr>
                         {/if}
