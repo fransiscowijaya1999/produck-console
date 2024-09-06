@@ -71,6 +71,7 @@
                             {session.closingRemark}
                         </div>
                     {/if}
+			<a class="link-secondary link-underline-opacity-0" href={`/sessionsales/${session.id}`}>Sales</a>
                 </div>
                 <div class="card-text">
                 </div>
