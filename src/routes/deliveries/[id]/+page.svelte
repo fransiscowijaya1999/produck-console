@@ -172,6 +172,38 @@
         }
     }
 
+    async function selectedSeparated(event) {
+        const { items } = event.detail;
+
+        try {
+            for (const item of items) {
+                const payload = {
+                    qty: item.quantity - item.delivered,
+                    cost: 0,
+                    purchaseOrderId: item.id,
+                    landedCostId: delivery.id
+                };
+
+                const res = await fetchServer("landedcostitems", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json", "Authorization": `Bearer ${data.authToken}` },
+                    body: JSON.stringify(payload)
+                });
+                
+                if (res.status != 204) {
+                    const result = await res.json();
+                    if (result.isError) return errorMessage = result.responseException.exceptionMessage;
+                }
+            }
+
+            searchPromise = (search)(keyword, delivery.id, listCurrentPage);
+        } catch (/** @type {*} */ error) {
+            errorMessage = error;
+        } finally {
+            setTimeout(() => errorMessage = "", 5000);
+        }
+    }
+
     async function selectAllBulk(event) {
         const { purchaseId } = event.detail;
 
@@ -214,6 +246,39 @@
             if (res.status != 204) {
                 const result = await res.json();
                 if (result.isError) return errorMessage = result.responseException.exceptionMessage;
+            }
+
+            searchPromise = (search)(keyword, delivery.id, listCurrentPage);
+        } catch (/** @type {*} */ error) {
+            errorMessage = error;
+        } finally {
+            setTimeout(() => errorMessage = "", 5000);
+        }
+    }
+
+    async function selectBulkChilds(event) {
+        const { childs, bulkId } = event.detail;
+
+        try {
+            for (const item of childs) {
+                const payload = {
+                    qty: item.quantity,
+                    cost: 0,
+                    purchaseOrderId: item.id,
+                    landedCostId: null,
+                    landedCostItemId: bulkId
+                };
+
+                const res = await fetchServer("landedcostitems", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json", "Authorization": `Bearer ${data.authToken}` },
+                    body: JSON.stringify(payload)
+                });
+                
+                if (res.status != 204) {
+                    const result = await res.json();
+                    if (result.isError) return errorMessage = result.responseException.exceptionMessage;
+                }
             }
 
             searchPromise = (search)(keyword, delivery.id, listCurrentPage);
@@ -279,6 +344,8 @@
                 on:save={addDeliveryOrder}
                 on:selectAllBulk={selectAllBulk}
                 on:selectAllSeparated={selectAllSeparated}
+                on:selectedSeparated={selectedSeparated}
+                on:selectBulkChilds={selectBulkChilds}
                 authToken={data.authToken} {payload} />
             <Pagination
                 on:nextPage={() => listCurrentPage += 1}

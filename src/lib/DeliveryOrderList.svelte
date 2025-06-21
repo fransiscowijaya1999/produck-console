@@ -3,6 +3,7 @@
     import { toStringDelimit } from "./numbering";
     import { fetchServer } from "./fetch";
     import SelectPurchaseOrderModal from "./modals/SelectPurchaseOrderModal.svelte";
+    import SelectPurchaseOrderBulkModal from "./modals/SelectPurchaseOrderBulkModal.svelte";
 
     const dispatch = createEventDispatcher();
 
@@ -18,6 +19,8 @@
     let newItem = Object.assign({}, newItemRaw);
     let isBulk = false;
     let showSelectPurchaseOrderModal = false;
+    let showSelectBulkChildModal = false;
+    let activeBulk = null;
 
     let keyword = "";
     let editedItem = null;
@@ -115,6 +118,11 @@
         keyword = "";
         editedItem = null;
     }
+
+    function handleBulkItemsSubmit(event, bulkId) {
+        dispatch("selectBulkChilds", { childs: event.detail.items, bulkId });
+        activeBulk = null;
+    }
 </script>
 
 {#if showSelectPurchaseOrderModal}<SelectPurchaseOrderModal
@@ -122,6 +130,13 @@
     on:handleModalClose={() => showSelectPurchaseOrderModal = false}
     on:selectAllBulk={(event) => dispatch("selectAllBulk", { purchaseId: event.detail.purchaseId })}
     on:selectAllSeparated={(event) => dispatch("selectAllSeparated", { purchaseId: event.detail.purchaseId })}
+    on:selectedSeparated={(event) => dispatch("selectedSeparated", { items: event.detail.items })}
+    />
+{/if}
+{#if showSelectBulkChildModal}<SelectPurchaseOrderBulkModal
+    on:handleItemClick={event => newItem.purchaseOrder = event.detail.item} {authToken}
+    on:handleModalClose={() => showSelectBulkChildModal = false}
+    on:selectItems={(event) => handleBulkItemsSubmit(event, activeBulk.id)}
     />
 {/if}
 
@@ -165,7 +180,8 @@
                     <td>
                         <div class="btn-group">
                             {#if !data.purchaseOrder}
-                                <button on:click={() => bulkAddItem = i} type="button" class="btn btn-primary btn-sm">add</button>
+                                <button on:click={() => {activeBulk = data; showSelectBulkChildModal = true}} type="button" class="btn btn-secondary btn-sm">multi</button>
+                                <button on:click={() => bulkAddItem = bulkAddItem != null ? null : i } type="button" class="btn btn-primary btn-sm">add</button>
                             {/if}
                             <button type="button" class="btn btn-danger btn-sm" on:click={dispatch("delete", { id: payload[i].id })}>delete</button>
                         </div>

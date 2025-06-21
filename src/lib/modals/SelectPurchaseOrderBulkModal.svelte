@@ -53,30 +53,8 @@
         }
     }
 
-    /** @param {*} item */
-    function handleItemClick(item) {
-        dispatch("handleItemClick", { item });
-        dispatch("handleModalClose");
-    }
-
-    function handleSelectedBulk() {
-        dispatch("selectedBulk", { items: selectedItems });
-        dispatch("handleModalClose");
-    }
-
-    function handleSelectedSeparated() {
-        console.log(selectedItems);
-        dispatch("selectedSeparated", { items: selectedItems });
-        dispatch("handleModalClose");
-    }
-
-    function handleSelectAllBulk() {
-        if (purchase) dispatch("selectAllBulk", { purchaseId: purchase.id });
-        dispatch("handleModalClose");
-    }
-
-    function handleSelectAllSeparated() {
-        if (purchase) dispatch("selectAllSeparated", { purchaseId: purchase.id });
+    function handleSelectItems() {
+        dispatch("selectItems", { items: selectedItems });
         dispatch("handleModalClose");
     }
 
@@ -122,19 +100,9 @@
                         <button on:click={() => showSelectPurchaseModal = true} type="button" class="btn btn-secondary d-block w-100">{"Select Purchase"}</button>
                     </div>
                     <div class="col-auto">
-                        <div class="btn-group">
-                            <button on:click={handleSelectedBulk} type="button" class="btn btn-primary" disabled={purchase === null}>Selected Bulk</button>
-                            <button on:click={handleSelectedSeparated} type="button" class="btn btn-primary" disabled={purchase === null}>Selected Separated</button>
-                        </div>
-                    </div>
-                    <div class="col-auto">
-                        <div class="btn-group">
-                            <button on:click={handleSelectAllBulk} type="button" class="btn btn-secondary" disabled={purchase === null}>Select All Bulk</button>
-                            <button on:click={handleSelectAllSeparated} type="button" class="btn btn-secondary" disabled={purchase === null}>Select All Separated</button>
-                        </div>
+                        <button on:click={handleSelectItems} type="button" class="btn btn-primary" disabled={purchase === null}>Select Items</button>
                     </div>
                 </div>
-                <!-- <input on:keyup={keywordDebounce} type="text" id="keyword-search" class="form-control"> -->
                 {#await searchPromise}
                     <h3>Loading...</h3>
                 {:then { payload, pagination }}
